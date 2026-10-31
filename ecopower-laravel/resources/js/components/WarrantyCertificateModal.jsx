@@ -225,7 +225,7 @@ export function printCertificateDirectly(certificate) {
     <div class="header">
       <div>
         <div class="brand">ECO<span>POWER</span> TUNISIE</div>
-        <div class="sub-brand">ECOGAM SARL • ECEAU-LOGIS • HAUTE ÉCONOMIE D'EAU</div>
+        <div class="sub-brand">ECOPOWER • ECEAU-LO • HAUTE ÉCONOMIE D'EAU</div>
       </div>
       <div class="cert-ref">
         <div class="section-label">N° Certificat & Facture</div>
@@ -309,9 +309,9 @@ export function printCertificateDirectly(certificate) {
 
     <div class="footer">
       <div>
-        <div style="font-weight: 800; color: #0f172a;">ECOGAM SARL / ECOPOWER TUNISIE</div>
+        <div style="font-weight: 800; color: #0f172a;">ECOPOWER TUNISIE</div>
         <div>Direction Technique & Service Qualité Pascal FABRE</div>
-        <div>Support Client : +216 97 644 988 • eceau-lo@orange.fr • www.ecopower.tn</div>
+        <div>Support Client : +216 97 644 988 • eceau-lo@orange.fr • www.eco-power.tn</div>
       </div>
 
       <div class="stamp-box">
@@ -484,7 +484,7 @@ export const WarrantyCertificateModal = ({ certificate: initialCert, orderId, on
                     ECO<span className="text-blue-600">POWER</span> TUNISIE
                   </h1>
                   <p className="text-[10px] uppercase font-extrabold tracking-widest text-slate-400">
-                    ECOGAM SARL • ECEAU-LOGIS
+                     Société ECOPOWER • ECEAU-LO
                   </p>
                 </div>
               </div>
@@ -654,7 +654,7 @@ export const WarrantyCertificateModal = ({ certificate: initialCert, orderId, on
             {/* ── FOOTER & OFFICIAL VISA ── */}
             <div className="pt-4 border-t border-slate-200 flex flex-col sm:flex-row justify-between items-end gap-4">
               <div className="text-[10px] text-slate-500 space-y-0.5">
-                <p><strong>ECOGAM SARL / ECOPOWER TUNISIE</strong></p>
+                <p><strong>ECOPOWER TUNISIE</strong></p>
                 <p>Direction Technique & Service Qualité Pascal FABRE</p>
                 <p>Contact : eceau-lo@orange.fr / +216 97 644 988</p>
               </div>

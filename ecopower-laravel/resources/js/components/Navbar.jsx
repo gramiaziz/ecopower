@@ -45,9 +45,9 @@ export const Navbar = ({ currentTab, setCurrentTab }) => {
             </span>
           </div>
           <div className="hidden md:flex items-center gap-3 text-blue-200 shrink-0">
-            <a href="tel:+21697644988" className="hover:text-white flex items-center gap-1 transition">
+            <a href="tel:+21671000000" className="hover:text-white flex items-center gap-1 transition">
               <PhoneCall className="w-3.5 h-3.5 text-blue-400" />
-              <span>{language === 'ar' ? 'خدمة الحرفاء:' : 'Service Client:'} <span dir="ltr">+216 97 644 988</span></span>
+              <span>{language === 'ar' ? 'خدمة الحرفاء:' : 'Service Client:'} <span dir="ltr">+216 71 000 000/ +216 55 348 109</span></span>
             </a>
             {isAdmin && (
               <>
@@ -80,7 +80,6 @@ export const Navbar = ({ currentTab, setCurrentTab }) => {
             <div>
               <div className="flex items-center gap-1">
                 <span className="font-black text-xl sm:text-2xl tracking-tight text-blue-950">ECO<span className="text-blue-600">POWER</span></span>
-                <span className="text-[10px] px-1.5 py-0.5 rounded-sm bg-blue-100 text-blue-800 font-bold uppercase tracking-wider">ECOGAM</span>
               </div>
               <p className="hidden xl:block text-[11px] text-slate-500 font-medium tracking-tight">Hydro-Économie &amp; Maîtrise de l'Énergie</p>
             </div>

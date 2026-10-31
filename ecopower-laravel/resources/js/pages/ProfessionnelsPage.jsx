@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SavingsCalculator } from '../components/SavingsCalculator';
+import { SEO } from '../components/SEO';
 import { ReferencesCarousel } from '../components/ReferencesCarousel';
 import { 
   Building2, 
@@ -83,7 +84,11 @@ export const ProfessionnelsPage = () => {
 
   return (
     <div className="py-10 space-y-16 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      
+<SEO
+  title="Facture SONEDE : économies pour hôtels et cliniques | EcoPower"
+  description="Réduisez vos factures SONEDE et STEG dans votre hôtel, clinique ou entreprise. Audit et test de débit gratuits, dispositifs hydro-économes Hostaform."
+  path="/professionnels"
+/>
       {/* Hero Header */}
       <div className="bg-gradient-to-br from-slate-900 via-brand-950 to-brand-900 text-white rounded-3xl p-8 sm:p-14 shadow-2xl relative overflow-hidden">
         <div className="max-w-3xl space-y-5">
@@ -375,13 +380,13 @@ export const ProfessionnelsPage = () => {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Facture Eau Mensuelle Estimée (DT)
+                  Tarif du mètre cube d’eau (TND/m³)
                 </label>
                 <input
                   type="text"
                   value={formData.currentWaterBillMonthly}
                   onChange={(e) => setFormData({ ...formData, currentWaterBillMonthly: e.target.value })}
-                  placeholder="Ex: 8 500 DT"
+                  placeholder="Ex: 3 120 DT"
                   className="w-full px-3.5 py-2.5 rounded-xl border border-slate-200 text-sm focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none"
                 />
               </div>
@@ -425,7 +430,7 @@ export const ProfessionnelsPage = () => {
             </button>
 
             <div className="text-center text-[11px] text-slate-600">
-              🔒 Vos données restent strictement confidentielles au bureau d'études EcoPower / ECOGAM.
+              🔒 Vos données restent strictement confidentielles au bureau d'études EcoPower.
             </div>
           </form>
         )}

@@ -42,7 +42,7 @@ class CertificateController extends Controller
                 'serials' => Format::json($i->serials),
             ])->values(),
             'issuer' => [
-                'company' => 'ECOPOWER TUNISIE / ECOGAM SARL',
+                'company' => 'ECOPOWER TUNISIE',
                 'technicalManager' => 'Pascal FABRE & Service Qualité',
                 'phone' => '+216 97 644 988 / eceau-lo@orange.fr',
                 'officialStamp' => 'CERTIFIÉ CONFORME AUX NORMES HYDRO-ÉCONOMIE',

@@ -647,7 +647,7 @@ app.get('/api/certificate/:orderId', async (req, res) => {
         serials: typeof item.serials === 'string' ? JSON.parse(item.serials) : (item.serials || []),
       })),
       issuer: {
-        company: 'ECOPOWER TUNISIE / ECOGAM SARL',
+        company: 'ECOPOWER TUNISIE',
         technicalManager: 'Pascal FABRE & Service Qualité',
         phone: '+216 98 000 000 / eceau-lo@orange.fr',
         officialStamp: 'CERTIFIÉ CONFORME AUX NORMES HYDRO-ÉCONOMIE'

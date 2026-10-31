@@ -121,7 +121,7 @@ export const Footer = ({ setCurrentTab }) => {
               {t.about}
             </p>
             <div className="text-xs text-slate-400 font-mono">
-              Société ECOGAM SARL • ECEAU-LOGIS
+              Société ECOPOWER • ECEAU-LO
             </div>
           </div>
 

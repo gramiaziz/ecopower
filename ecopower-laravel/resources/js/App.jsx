@@ -33,14 +33,7 @@ function WhatsAppLabel() {
 
 function AppContent() {
   const [currentTab, setCurrentTabState] = useState(getTabFromUrl);
-  // Retour de la page de paiement Konnect : /tracking?commande=ECO-xxxx&paiement=retour
-  const [trackingQuery, setTrackingQuery] = useState(() => {
-    try {
-      return new URLSearchParams(window.location.search).get('commande') || '';
-    } catch {
-      return '';
-    }
-  });
+  const [trackingQuery, setTrackingQuery] = useState('');
 
   const setCurrentTab = (tab) => {
     setCurrentTabState(tab);
