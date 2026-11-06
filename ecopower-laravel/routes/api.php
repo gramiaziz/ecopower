@@ -38,6 +38,7 @@ Route::post('/leads', [LeadController::class, 'store'])->middleware('throttle:or
 Route::middleware('jwt:admin')->group(function () {
     Route::post('/products', [ProductController::class, 'store']);
     Route::post('/products/image', [ProductController::class, 'uploadImage']);
+    Route::put('/products/order', [ProductController::class, 'reorder']); // doit rester AVANT /products/{id}
     Route::put('/products/{id}', [ProductController::class, 'update']);
     Route::delete('/products/{id}', [ProductController::class, 'destroy']);
 

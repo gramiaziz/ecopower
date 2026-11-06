@@ -50,6 +50,7 @@ class Format
             'showOnHome' => (bool) ($p->show_on_home ?? false),
             'pickupDiscount' => (bool) ($p->pickup_discount ?? false),
             'isHero' => (bool) ($p->is_hero ?? false),
+            'sortOrder' => (int) ($p->sort_order ?? 0),
         ];
     }
 

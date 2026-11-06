@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { Plus, Search, Edit3, Trash2, X, Package, Star, Home, Store, Upload, Loader2, Sparkles } from 'lucide-react';
+import { Plus, Search, Edit3, Trash2, X, Package, Star, Home, Store, Upload, Loader2, Sparkles, ChevronUp, ChevronDown } from 'lucide-react';
 import { Badge, FilterChips, SearchInput, EmptyState, dt } from './ui';
 
 export const CATEGORIES = {
@@ -161,7 +161,7 @@ function ProductModal({ initial, onClose, onSave, onUpload }) {
             </label>
             <label className="col-span-2 flex items-center gap-2 text-sm text-slate-700">
               <input type="checkbox" checked={!!p.isHero} onChange={set('isHero')} className="accent-blue-600 w-4 h-4" />
-              Produit vedette : grande carte en haut de la page d'accueil (un seul produit)
+              Produit vedette : carte en haut de la page d'accueil (2 produits maximum)
             </label>
           </div>
         </div>
@@ -218,7 +218,7 @@ function StockCell({ product, onSave }) {
   );
 }
 
-export function Products({ products, filter, setFilter, onCreate, onUpdate, onDelete, onUpload }) {
+export function Products({ products, filter, setFilter, onCreate, onUpdate, onDelete, onUpload, onReorder }) {
   const [query, setQuery] = useState('');
   const [editing, setEditing] = useState(null);
 
@@ -233,7 +233,13 @@ export function Products({ products, filter, setFilter, onCreate, onUpdate, onDe
     return c;
   }, [products]);
 
-  const filtered = products.filter((p) => {
+  // Liste triée selon l'ordre d'affichage défini par l'admin
+  const sorted = useMemo(
+    () => [...products].sort((a, b) => (a.sortOrder ?? 9999) - (b.sortOrder ?? 9999)),
+    [products]
+  );
+
+  const filtered = sorted.filter((p) => {
     if (filter === 'low' && p.stock > 10) return false;
     if (filter === 'home' && !p.showOnHome) return false;
     if (filter === 'pickup' && !p.pickupDiscount) return false;
@@ -241,6 +247,20 @@ export function Products({ products, filter, setFilter, onCreate, onUpdate, onDe
     const q = query.trim().toLowerCase();
     return !q || p.name.toLowerCase().includes(q) || p.id.toLowerCase().includes(q);
   });
+
+  // La réorganisation n'a de sens que sur la liste complète (sans filtre ni recherche)
+  const canReorder = filter === 'all' && !query.trim();
+
+  const move = (id, dir) => {
+    const i = sorted.findIndex((p) => p.id === id);
+    const j = i + dir;
+    if (i < 0 || j < 0 || j >= sorted.length) return;
+    const next = [...sorted];
+    [next[i], next[j]] = [next[j], next[i]];
+    onReorder(next.map((p) => p.id));
+  };
+
+  const hint = 'Affichez « Tous » sans recherche pour réorganiser';
 
   return (
     <div className="space-y-4">
@@ -271,9 +291,10 @@ export function Products({ products, filter, setFilter, onCreate, onUpdate, onDe
           <EmptyState icon={Package} title="Aucun produit" />
         ) : (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[920px]">
+            <table className="w-full text-sm min-w-[980px]">
               <thead>
                 <tr className="bg-slate-50 text-[11px] uppercase font-bold text-slate-500 border-b border-slate-200">
+                  <th className="px-2 py-3 text-center w-16">Ordre</th>
                   <th className="px-4 py-3 text-left">Produit</th>
                   <th className="px-4 py-3 text-left">Catégorie</th>
                   <th className="px-4 py-3 text-right">Prix</th>
@@ -287,6 +308,30 @@ export function Products({ products, filter, setFilter, onCreate, onUpdate, onDe
               <tbody className="divide-y divide-slate-100">
                 {filtered.map((p) => (
                   <tr key={p.id} className="hover:bg-slate-50">
+                    <td className="px-2 py-2.5">
+                      <div className="flex flex-col items-center">
+                        <button
+                          type="button"
+                          disabled={!canReorder || sorted[0].id === p.id}
+                          onClick={() => move(p.id, -1)}
+                          className="p-0.5 text-slate-500 hover:text-blue-700 disabled:opacity-20 disabled:hover:text-slate-500"
+                          title={canReorder ? 'Monter' : hint}
+                          aria-label="Monter"
+                        >
+                          <ChevronUp className="w-4 h-4" />
+                        </button>
+                        <button
+                          type="button"
+                          disabled={!canReorder || sorted[sorted.length - 1].id === p.id}
+                          onClick={() => move(p.id, 1)}
+                          className="p-0.5 text-slate-500 hover:text-blue-700 disabled:opacity-20 disabled:hover:text-slate-500"
+                          title={canReorder ? 'Descendre' : hint}
+                          aria-label="Descendre"
+                        >
+                          <ChevronDown className="w-4 h-4" />
+                        </button>
+                      </div>
+                    </td>
                     <td className="px-4 py-2.5 cursor-pointer" onClick={() => setEditing(p)} title="Modifier photo, prix, description…">
                       <div className="flex items-center gap-3">
                         <img src={p.image} alt="" className="w-10 h-10 rounded-lg object-cover bg-slate-100 shrink-0" />
@@ -314,7 +359,7 @@ export function Products({ products, filter, setFilter, onCreate, onUpdate, onDe
                       <FlagToggle on={!!p.pickupDiscount} icon={Store} label="Remise de 10% en retrait au local" onChange={(v) => onUpdate(p.id, { pickupDiscount: v })} />
                     </td>
                     <td className="px-4 py-2.5 text-center">
-                      <FlagToggle on={!!p.isHero} icon={Sparkles} label="Produit vedette en haut de la page d'accueil" onChange={(v) => onUpdate(p.id, { isHero: v })} />
+                      <FlagToggle on={!!p.isHero} icon={Sparkles} label="Produit vedette en haut de la page d'accueil (2 maximum)" onChange={(v) => onUpdate(p.id, { isHero: v })} />
                     </td>
                     <td className="px-4 py-2.5 text-right whitespace-nowrap">
                       <button onClick={() => setEditing(p)} className="p-2 text-slate-500 hover:text-blue-700 hover:bg-blue-50 rounded-lg" title="Modifier">

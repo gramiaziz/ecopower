@@ -214,8 +214,8 @@ export const HomePage = ({ setCurrentTab }) => {
     }
   ]);
 
-  // Grande carte en haut à droite : le produit coché « Produit vedette » dans l'admin.
-  const [hero, setHero] = useState(null);
+  // Cartes en haut à droite : les produits cochés « Produit vedette » dans l'admin (2 maximum).
+  const [heroes, setHeroes] = useState([]);
 
   useEffect(() => {
     fetch('/api/products')
@@ -223,13 +223,13 @@ export const HomePage = ({ setCurrentTab }) => {
       .then((list) => {
         if (!Array.isArray(list)) return;
         setFeaturedPacks(list.filter((p) => p.showOnHome));
-        setHero(list.find((p) => p.isHero) || null);
+        setHeroes(list.filter((p) => p.isHero).slice(0, 2));
       })
       .catch(() => {});
   }, []);
 
-  // Textes de la carte vedette : ceux rédigés pour le Pack Appartement 4L, sinon ceux de la fiche produit.
-  const heroCard = hero && hero.id !== 'pack-appartement-4l'
+  // Données d'une carte vedette : textes rédigés pour le Pack Appartement 4L, sinon ceux de la fiche produit.
+  const buildHeroCard = (hero) => (hero && hero.id !== 'pack-appartement-4l'
     ? {
         id: hero.id,
         name: hero.name,
@@ -253,7 +253,95 @@ export const HomePage = ({ setCurrentTab }) => {
         offer: !hero || hero.oldPrice > hero.price
           ? t.cardOfferPct(Math.round((1 - (hero?.price ?? 78) / (hero?.oldPrice ?? 99)) * 100))
           : null,
-      };
+      });
+
+  // Aucun produit vedette coché : on garde la carte du Pack Appartement par défaut.
+  const heroCards = (heroes.length ? heroes : [null]).map(buildHeroCard);
+  const twoHeroes = heroCards.length > 1;
+
+const renderHeroCard = (heroCard) => (
+  <div
+    key={heroCard.id}
+    className="relative w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/90 overflow-hidden flex flex-col"
+  >
+    {heroCard.offer && (
+      <div className="absolute top-4 end-4 bg-energy-500 text-white text-xs font-black uppercase px-3 py-1.5 rounded-full shadow-xs">
+        {heroCard.offer}
+      </div>
+    )}
+
+    {/* En-tête : texte à gauche, logo "14 jours satisfait ou remboursé" à droite */}
+    <div className="flex items-start justify-between gap-4">
+      <div className="min-w-0">
+        <div className="text-xs font-bold text-brand-700 uppercase tracking-wider mb-2 pe-20 sm:pe-0">
+          {t.cardKicker}
+        </div>
+        <h3 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif">
+          {heroCard.title}
+        </h3>
+        <p className="text-sm text-slate-600 mt-2 leading-relaxed line-clamp-3">
+          {heroCard.sub}
+        </p>
+      </div>
+
+      <img
+        src="/garantie-14-jours.webp"
+        alt="Garantie satisfait ou remboursé 14 jours"
+        width="112"
+        height="106"
+        className="w-20 sm:w-28 h-auto shrink-0 mt-7 drop-shadow-sm"
+      />
+    </div>
+
+    <div className="my-6 p-5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center">
+      <img
+        src={heroCard.image}
+        alt={heroCard.title}
+        className="h-64 object-contain drop-shadow-md hover:scale-105 transition-transform"
+      />
+    </div>
+
+    <div className="flex flex-wrap items-baseline justify-between gap-2 mb-4 mt-auto">
+      <div>
+        {heroCard.oldPrice > heroCard.price && (
+          <span className="text-sm text-slate-400 line-through me-2">
+            {heroCard.oldPrice.toFixed(3)} {t.cur}
+          </span>
+        )}
+        <span className="text-4xl font-black text-brand-900 whitespace-nowrap">
+          {heroCard.price.toFixed(3)} {t.cur}
+        </span>
+        <span className="text-sm text-slate-500 ms-1">{t.ttc}</span>
+      </div>
+      {heroCard.isPack && (
+        <span className="text-sm font-bold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-md">
+          {t.giftMeter}
+        </span>
+      )}
+    </div>
+
+    <button
+      onClick={() =>
+        addToCart({
+          id: heroCard.id,
+          name: heroCard.name,
+          price: heroCard.price,
+          image: heroCard.image,
+        })
+      }
+      className="w-full bg-brand-700 hover:bg-brand-800 text-white font-black py-4 px-4 text-base rounded-xl flex items-center justify-center gap-2 shadow-md shadow-brand-700/20 transition-all hover:scale-[1.02]"
+    >
+      <ShoppingBag className="w-5 h-5" />
+      <span>{t.addToCart(heroCard.price.toFixed(3))}</span>
+    </button>
+
+    <p className="text-center text-xs text-slate-600 mt-4 flex items-center justify-center gap-1.5">
+      <CheckCircle2 className="w-4 h-4 text-blue-600" />
+      {t.cardFooter}
+    </p>
+  </div>
+);
+
 
   // Clip diagram zones (from Pascal's email RETOUCHES CLIP)
   const clipZones = [
@@ -299,128 +387,77 @@ export const HomePage = ({ setCurrentTab }) => {
 
 
       {/* 1. HERO SECTION */}
-      <section className="relative overflow-hidden pt-8 pb-16 sm:pt-16 sm:pb-24 bg-gradient-to-b from-brand-50/60 via-white to-slate-50">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+    <section className="relative overflow-hidden pt-8 pb-16 sm:pt-12 sm:pb-24 bg-gradient-to-b from-brand-50/60 via-white to-slate-50">
+  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12">
 
-            {/* Left Column: Copy & CTAs */}
-            <div className="lg:col-span-7 space-y-6 text-center lg:text-start">
+    {/* Texte : reste en premier dans le code (bon pour le SEO), mais s'affiche EN DESSOUS (order-2) */}
+    <div className="order-1 max-w-3xl mx-auto space-y-6 text-center">
 
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100 text-brand-800 text-xs font-bold tracking-wide">
-                <Sparkles className="w-4 h-4 text-brand-600" />
-                <span>{t.heroBadge}</span>
-              </div>
+      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100 text-brand-800 text-xs font-bold tracking-wide">
+        <Sparkles className="w-4 h-4 text-brand-600" />
+        <span>{t.heroBadge}</span>
+      </div>
 
-              <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] font-serif">
-                {t.heroTitle[0]}<span className="text-brand-700">{t.heroTitle[1]}</span>{t.heroTitle[2]}<span className="text-energy-500">{t.heroTitle[3]}</span>
-              </h1>
+      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] font-serif">
+        {t.heroTitle[0]}<span className="text-brand-700">{t.heroTitle[1]}</span>{t.heroTitle[2]}<span className="text-energy-500">{t.heroTitle[3]}</span>
+      </h1>
 
-              <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto lg:mx-0">
-                {t.heroText}
-              </p>
+      <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
+        {t.heroText}
+      </p>
 
-              {/* CTAs */}
-              <div className="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-3 pt-2">
-                <button
-                  onClick={() => setCurrentTab('shop')}
-                  className="w-full sm:w-auto bg-gradient-to-r from-energy-500 to-energy-600 hover:from-energy-600 hover:to-energy-500 text-white font-extrabold px-8 py-4 rounded-2xl text-base shadow-xl shadow-energy-500/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
-                >
-                  <ShoppingBag className="w-5 h-5" />
-                  <span>{t.ctaOrder}</span>
-                </button>
+      {/* CTAs */}
+      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
+        <button
+          onClick={() => setCurrentTab('shop')}
+          className="w-full sm:w-auto bg-gradient-to-r from-energy-500 to-energy-600 hover:from-energy-600 hover:to-energy-500 text-white font-extrabold px-8 py-4 rounded-2xl text-base shadow-xl shadow-energy-500/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
+        >
+          <ShoppingBag className="w-5 h-5" />
+          <span>{t.ctaOrder}</span>
+        </button>
 
-                <button
-                  onClick={() => setCurrentTab('calculator')}
-                  className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 font-bold px-7 py-4 rounded-2xl text-base flex items-center justify-center gap-2 transition-all hover:border-brand-500 hover:text-brand-700"
-                >
-                  <span>{t.ctaSimulate}</span>
-                  <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-                </button>
-              </div>
+        <button
+          onClick={() => setCurrentTab('calculator')}
+          className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 font-bold px-7 py-4 rounded-2xl text-base flex items-center justify-center gap-2 transition-all hover:border-brand-500 hover:text-brand-700"
+        >
+          <span>{t.ctaSimulate}</span>
+          <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+        </button>
+      </div>
 
-              {/* Trust bullets */}
-              <div className="pt-4 grid grid-cols-3 gap-2 border-t border-slate-200/80 text-center lg:text-start">
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-brand-800">+60%</div>
-                  <div className="text-[11px] text-slate-500 font-semibold">{t.trustWater}</div>
-                </div>
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-energy-500">+25%</div>
-                  <div className="text-[11px] text-slate-500 font-semibold">{t.trustGas}</div>
-                </div>
-                <div>
-                  <div className="text-xl sm:text-2xl font-black text-blue-600">{t.trustYears}</div>
-                  <div className="text-[11px] text-slate-500 font-semibold">{t.trustWarranty}</div>
-                </div>
-              </div>
-
-            </div>
-
-            {/* Right Column: Hero Visual Product Card */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative mx-auto max-w-md bg-white rounded-3xl p-6 shadow-2xl border border-slate-200/90 overflow-hidden">
-                {heroCard.offer && (
-                  <div className="absolute top-4 end-4 bg-energy-500 text-white text-[10px] font-black uppercase px-3 py-1 rounded-full shadow-xs">
-                    {heroCard.offer}
-                  </div>
-                )}
-
-                <div className="text-xs font-bold text-brand-700 uppercase tracking-wider mb-2">
-                  {t.cardKicker}
-                </div>
-                <h3 className="text-2xl font-black text-slate-900 font-serif">
-                  {heroCard.title}
-                </h3>
-                <p className="text-xs text-slate-500 mt-1 line-clamp-2">
-                  {heroCard.sub}
-                </p>
-
-                <div className="my-5 rounded-2xl bg-slate-50 p-4 border border-slate-100 flex items-center justify-center">
-                  <img
-                    src={heroCard.image}
-                    alt={heroCard.title}
-                    className="h-52 object-contain drop-shadow-md hover:scale-105 transition-transform"
-                  />
-                </div>
-
-                <div className="flex items-baseline justify-between mb-4">
-                  <div>
-                    {heroCard.oldPrice > heroCard.price && (
-                      <span className="text-xs text-slate-400 line-through me-2">{heroCard.oldPrice.toFixed(3)} {t.cur}</span>
-                    )}
-                    <span className="text-3xl font-black text-brand-900 whitespace-nowrap">{heroCard.price.toFixed(3)} {t.cur}</span>
-                    <span className="text-xs text-slate-500 ms-1">{t.ttc}</span>
-                  </div>
-                  {heroCard.isPack && (
-                  <span className="text-xs font-bold text-blue-700 bg-blue-50 px-2.5 py-1 rounded-md">
-                    {t.giftMeter}
-                  </span>
-                  )}
-                </div>
-
-                <button
-                  onClick={() => addToCart({
-                    id: heroCard.id,
-                    name: heroCard.name,
-                    price: heroCard.price,
-                    image: heroCard.image
-                  })}
-                  className="w-full bg-brand-700 hover:bg-brand-800 text-white font-black py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-md shadow-brand-700/20 transition-all hover:scale-[1.02]"
-                >
-                  <ShoppingBag className="w-4 h-4" />
-                  <span>{t.addToCart(heroCard.price.toFixed(3))}</span>
-                </button>
-
-                <p className="text-center text-[11px] text-slate-600 mt-3 flex items-center justify-center gap-1.5">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-blue-600" />
-                  {t.cardFooter}
-                </p>
-              </div>
-            </div>
-
-          </div>
+      {/* Trust bullets */}
+      <div className="pt-4 grid grid-cols-3 gap-2 border-t border-slate-200/80 text-center">
+        <div>
+          <div className="text-xl sm:text-2xl font-black text-brand-800">+60%</div>
+          <div className="text-[11px] text-slate-500 font-semibold">{t.trustWater}</div>
         </div>
-      </section>
+        <div>
+          <div className="text-xl sm:text-2xl font-black text-energy-500">+25%</div>
+          <div className="text-[11px] text-slate-500 font-semibold">{t.trustGas}</div>
+        </div>
+        <div>
+          <div className="text-xl sm:text-2xl font-black text-blue-600">{t.trustYears}</div>
+          <div className="text-[11px] text-slate-500 font-semibold">{t.trustWarranty}</div>
+        </div>
+      </div>
+
+    </div>
+
+    {/* Cartes vedettes : s'affichent EN HAUT */}
+    <div className="order-2">
+      <div
+        className={
+          twoHeroes
+            ? 'grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch'
+            : 'max-w-xl mx-auto'
+        }
+      >
+        {heroCards.map((heroCard) => renderHeroCard(heroCard))}
+      </div>
+    </div>
+
+  </div>
+</section>
 
       {/* 2. SCHÉMA CLIP & ZONES D'INSTALLATION (Demandé par Pascal Fabre) */}
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">

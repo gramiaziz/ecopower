@@ -11,9 +11,13 @@ use Throwable;
 
 class ProductController extends Controller
 {
+    /** Nombre maximum de produits « vedette » affichés en haut de l'accueil. */
+    private const MAX_HEROES = 2;
+
     public function index()
     {
         $products = DB::table('products')
+            ->orderBy('sort_order')
             ->orderByDesc('is_featured')
             ->orderBy('price')
             ->get()
@@ -37,6 +41,10 @@ class ProductController extends Controller
         $p = $request->all();
         $id = ($p['id'] ?? null) ?: 'prod-'.(int) round(microtime(true) * 1000);
 
+        if (! empty($p['isHero']) && DB::table('products')->where('is_hero', 1)->count() >= self::MAX_HEROES) {
+            return response()->json(['error' => 'Maximum '.self::MAX_HEROES." produits vedette : décochez-en un d'abord."], 422);
+        }
+
         try {
             DB::table('products')->insert([
                 'id' => $id,
@@ -57,17 +65,18 @@ class ProductController extends Controller
                 'show_on_home' => ! empty($p['showOnHome']) ? 1 : 0,
                 'pickup_discount' => ! empty($p['pickupDiscount']) ? 1 : 0,
                 'is_hero' => ! empty($p['isHero']) ? 1 : 0,
+                'sort_order' => ((int) DB::table('products')->max('sort_order')) + 1,
             ]);
-            if (! empty($p['isHero'])) {
-                DB::table('products')->where('id', '!=', $id)->update(['is_hero' => 0]);
-            }
         } catch (Throwable $e) {
             report($e);
 
             return response()->json(['error' => 'Erreur création produit'], 500);
         }
 
-        return response()->json(array_merge(['id' => $id], $p), 201);
+        return response()->json(array_merge($p, [
+            'id' => $id,
+            'sortOrder' => (int) DB::table('products')->where('id', $id)->value('sort_order'),
+        ]), 201);
     }
 
     public function update(Request $request, string $id)
@@ -102,11 +111,12 @@ class ProductController extends Controller
             if (! DB::table('products')->where('id', $id)->exists()) {
                 return response()->json(['error' => 'Produit non trouvé'], 404);
             }
-            DB::table('products')->where('id', $id)->update($fields);
-            // Un seul produit vedette à la fois.
-            if (! empty($fields['is_hero'])) {
-                DB::table('products')->where('id', '!=', $id)->update(['is_hero' => 0]);
+            // 2 produits vedette au maximum (les autres doivent être décochés d'abord).
+            if (! empty($fields['is_hero'])
+                && DB::table('products')->where('is_hero', 1)->where('id', '!=', $id)->count() >= self::MAX_HEROES) {
+                return response()->json(['error' => 'Maximum '.self::MAX_HEROES." produits vedette : décochez-en un d'abord."], 422);
             }
+            DB::table('products')->where('id', $id)->update($fields);
         } catch (Throwable $e) {
             report($e);
 
@@ -114,6 +124,29 @@ class ProductController extends Controller
         }
 
         return response()->json(Format::row(DB::table('products')->where('id', $id)->first()));
+    }
+
+    /** Enregistre l'ordre d'affichage : reçoit { ids: [...] } dans l'ordre voulu. */
+    public function reorder(Request $request)
+    {
+        $ids = $request->input('ids');
+        if (! is_array($ids) || ! $ids) {
+            return response()->json(['error' => 'Liste de produits invalide'], 422);
+        }
+
+        try {
+            DB::transaction(function () use ($ids) {
+                foreach (array_values($ids) as $position => $id) {
+                    DB::table('products')->where('id', (string) $id)->update(['sort_order' => $position]);
+                }
+            });
+        } catch (Throwable $e) {
+            report($e);
+
+            return response()->json(['error' => 'Erreur enregistrement de l\'ordre'], 500);
+        }
+
+        return response()->json(['message' => 'Ordre enregistré']);
     }
 
     /** Envoi d'une photo produit depuis l'admin : enregistrée dans public/products/uploads. */

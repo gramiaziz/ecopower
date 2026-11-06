@@ -1,15 +1,15 @@
 import React, { useState, useEffect } from 'react';
 import { useCart } from '../context/CartContext';
 import { SEO } from '../components/SEO';
-import { 
-  ShoppingBag, 
-  Search, 
-  Filter, 
-  ShieldCheck, 
-  CheckCircle2, 
-  Star, 
-  Eye, 
-  X, 
+import {
+  ShoppingBag,
+  Search,
+  Filter,
+  ShieldCheck,
+  CheckCircle2,
+  Star,
+  Eye,
+  X,
   Truck,
   Sparkles
 } from 'lucide-react';
@@ -21,12 +21,14 @@ export const ShopPage = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [activeModalProduct, setActiveModalProduct] = useState(null);
+  const [isImageZoomed, setIsImageZoomed] = useState(false);
 
   useEffect(() => {
     fetch('/api/products')
       .then((res) => res.json())
       .then((data) => {
-        setProducts(data);
+        // Ordre d'affichage défini par l'admin
+        setProducts([...data].sort((a, b) => (a.sortOrder ?? 9999) - (b.sortOrder ?? 9999)));
         setLoading(false);
       })
       .catch((err) => {
@@ -55,11 +57,12 @@ export const ShopPage = () => {
 
   return (
     <div className="py-10 space-y-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-   <SEO
-  title="Boutique hydro-économes pour réduire sa facture SONEDE | EcoPower"
-  description="Pommes de douche, éco-robinets et packs hydro-économes pour réduire votre facture SONEDE. Livraison 24-48h partout en Tunisie, paiement à la livraison."
-  path="/shop"
-/>
+      <SEO
+        title="Boutique hydro-économes pour réduire sa facture SONEDE | EcoPower"
+        description="Pommes de douche, éco-robinets et packs hydro-économes pour réduire votre facture SONEDE. Livraison 24-48h partout en Tunisie, paiement à la livraison."
+        path="/shop"
+      />
+
       {/* Top Banner */}
       <div className="bg-gradient-to-r from-brand-900 via-brand-800 to-skywater-700 text-white rounded-3xl p-8 sm:p-12 shadow-xl relative overflow-hidden flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6">
         <div>
@@ -86,7 +89,7 @@ export const ShopPage = () => {
       {/* Filters & Search Bar */}
       <div className="bg-white p-4 sm:p-6 rounded-3xl border border-slate-200 shadow-xs space-y-4">
         <div className="flex flex-col sm:flex-row gap-4 justify-between items-center">
-          
+
           {/* Search Input */}
           <div className="relative w-full sm:w-80">
             <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2" />
@@ -147,43 +150,49 @@ export const ShopPage = () => {
             >
               <div>
                 {/* Image Box */}
-            
-<div className="h-52 bg-slate-50 relative p-4 flex items-center justify-center border-b border-slate-100 overflow-hidden">
+                <div className="h-52 bg-slate-50 relative p-4 flex items-center justify-center border-b border-slate-100 overflow-hidden">
 
-  {/* Badge Pack Éco */}
-  {product.category === 'packs' && (
-    <span className="absolute top-2 left-2 bg-energy-500 text-white text-[9px] font-black uppercase px-2 py-1 rounded-full shadow-sm z-10">
-      Pack Éco
-    </span>
-  )}
-
-  {/* Badge Garantie */}
-  {product.warranty && (
-    <span className="absolute top-2 right-2 bg-white/95 text-brand-800 text-[9px] font-bold px-2 py-1 rounded-md border border-slate-200 shadow-sm z-10">
-      Garantie {product.warranty}
-    </span>
-  )}
+                  {/* Badge Pack Éco */}
+                  {product.category === 'packs' && (
+                    <span className="absolute top-2 left-2 bg-energy-500 text-white text-[9px] font-black uppercase px-2 py-1 rounded-full shadow-sm z-10">
+                      Pack Éco
+                    </span>
+                  )}
+{/* Badge Satisfait ou Remboursé */}
 
   <img
-    src={product.image}
-    alt={product.name}
-    className="max-h-[85%] max-w-[85%] object-contain mt-5 group-hover:scale-105 transition-transform duration-300"
-    loading="lazy"
+    src="/garantie-14-jours.webp"
+    alt="14 jours satisfait ou remboursé"
+    className="absolute bottom-1 right-1 w-16 sm:w-20 h-auto object-contain z-10 drop-shadow-sm"
+  loading="lazy"
   />
 
-  {/* Bouton Détails */}
-  <button
-    onClick={() => setActiveModalProduct(product)}
-    className="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white gap-2 font-bold text-xs"
-  >
-    <div className="bg-white text-slate-900 px-3 py-1.5 rounded-xl shadow-md flex items-center gap-1.5 hover:scale-105 transition">
-      <Eye className="w-3.5 h-3.5" />
-      <span>Détails &amp; Fiche</span>
-    </div>
-  </button>
+                  {/* Badge Garantie */}
+                  {product.warranty && (
+                    <span className="absolute top-2 right-2 bg-white/95 text-brand-800 text-[9px] font-bold px-2 py-1 rounded-md border border-slate-200 shadow-sm z-10">
+                      Garantie {product.warranty}
+                    </span>
+                  )}
 
-</div>
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="max-h-[110%] max-w-[100%] object-contain mt-5 group-hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
+                  />
 
+                  {/* Bouton Détails */}
+                  <button
+                    onClick={() => setActiveModalProduct(product)}
+                    className="absolute inset-0 bg-slate-900/30 opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center text-white gap-2 font-bold text-xs"
+                  >
+                    <div className="bg-white text-slate-900 px-3 py-1.5 rounded-xl shadow-md flex items-center gap-1.5 hover:scale-105 transition">
+                      <Eye className="w-3.5 h-3.5" />
+                      <span>Détails &amp; Fiche</span>
+                    </div>
+                  </button>
+
+                </div>
 
                 {/* Content */}
                 <div className="p-5">
@@ -244,7 +253,7 @@ export const ShopPage = () => {
       {activeModalProduct && (
         <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
           <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200">
-            
+
             <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
               <span className="text-xs font-bold uppercase text-brand-700 tracking-wider">
                 Fiche Technique Produit
@@ -259,13 +268,21 @@ export const ShopPage = () => {
 
             <div className="p-6 sm:p-8 space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
-                <div className="h-56 bg-slate-50 rounded-2xl border border-slate-100 p-4 flex items-center justify-center">
-                  <img
-                    src={activeModalProduct.image}
-                    alt={activeModalProduct.name}
-                    className="max-h-full max-w-full object-contain"
-                  />
-                </div>
+          <div
+  className="w-full min-h-[350px] sm:min-h-[500px] bg-slate-50 rounded-2xl border border-slate-100 p-3 flex items-center justify-center cursor-zoom-in group relative"
+  onClick={() => setIsImageZoomed(true)}
+>
+  <img
+    src={activeModalProduct.image}
+    alt={activeModalProduct.name}
+    className="max-h-[500px] w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+  />
+
+  <span className="absolute bottom-3 right-3 bg-white/95 text-brand-800 text-xs font-bold px-3 py-2 rounded-xl shadow-md flex items-center gap-2">
+    <Eye className="w-4 h-4" />
+    Agrandir l'image
+  </span>
+</div>
                 <div className="space-y-3">
                   <h3 className="text-xl font-extrabold text-slate-900 font-serif">
                     {activeModalProduct.name}
@@ -321,8 +338,32 @@ export const ShopPage = () => {
 
           </div>
         </div>
+        
       )}
+{/* Image Zoom - Plein écran */}
+{isImageZoomed && activeModalProduct && (
+  <div
+    className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-3 sm:p-8 cursor-zoom-out"
+    onClick={() => setIsImageZoomed(false)}
+  >
+    <button
+      onClick={() => setIsImageZoomed(false)}
+      className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full"
+    >
+      <X className="w-6 h-6" />
+    </button>
 
+    <img
+      src={activeModalProduct.image}
+      alt={activeModalProduct.name}
+      className="max-w-full max-h-full object-contain"
+    />
+
+    <span className="absolute bottom-5 text-white/80 text-xs">
+      Cliquez pour fermer
+    </span>
+  </div>
+)}
     </div>
   );
 };

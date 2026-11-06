@@ -197,7 +197,8 @@ export const AdminDashboard = ({ onExit }) => {
   }, 'Note enregistrée');
 
   // Un seul produit vedette : le serveur retire le drapeau des autres, on fait pareil ici.
-  const withHero = (list, id, data) => (data.isHero ? list.map((p) => (p.id === id ? p : { ...p, isHero: false })) : list);
+  // Plusieurs produits vedette possibles (2 max, contrôlé par le serveur) : on ne décoche plus les autres ici.
+  const withHero = (list) => list;
 
   const createProduct = guard(async (data) => {
     const created = await api('POST', '/api/products', data);
@@ -208,6 +209,20 @@ export const AdminDashboard = ({ onExit }) => {
     await api('PUT', `/api/products/${id}`, data);
     setProducts((prev) => withHero(prev, id, data).map((p) => (p.id === id ? { ...p, ...data } : p)));
   }, 'Produit mis à jour');
+
+  // Réorganisation : on met à jour l'affichage tout de suite, puis on enregistre l'ordre en une seule requête.
+  const reorderProducts = guard(async (ids) => {
+    const position = new Map(ids.map((id, i) => [id, i]));
+    setProducts((prev) =>
+      prev.map((p) => (position.has(p.id) ? { ...p, sortOrder: position.get(p.id) } : p))
+    );
+    try {
+      await api('PUT', '/api/products/order', { ids });
+    } catch (err) {
+      fetchData({ silent: true }); // retour à l'ordre du serveur en cas d'échec
+      throw err;
+    }
+  }, "Ordre d'affichage enregistré");
 
   // Envoi d'une photo produit (multipart) : renvoie l'URL publique de l'image.
   const uploadProductImage = async (file) => {
@@ -400,6 +415,7 @@ export const AdminDashboard = ({ onExit }) => {
                   onUpdate={updateProduct}
                   onDelete={deleteProduct}
                   onUpload={uploadProductImage}
+                  onReorder={reorderProducts}
                 />
               )}
               {tab === 'leads' && (

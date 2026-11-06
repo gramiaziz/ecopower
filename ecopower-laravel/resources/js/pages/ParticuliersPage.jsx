@@ -27,7 +27,7 @@ const TXT = {
     problem1: ["En Europe, la pression d'eau est normalisée à ", '3 Bars', ', délivrant en moyenne 12 litres/min pour un robinet et 16 litres/min pour une douche.'],
     problem2: ['En Tunisie, la pression de base SONEDE n’est pas normalisée.', " Cela engendre pour plus de 80% des utilisateurs une surconsommation d'eau pouvant atteindre ", 'le double par minute', ' (20 à 24 litres/min !).'],
     problem3: ['Cette surconsommation mécanique entraîne immédiatement une surconsommation de ', 'Gaz (STEG)', " pour le chauffage de l'eau, ainsi qu’un passage dans les ", 'tranches tarifaires SONEDE supérieures', ' beaucoup plus onéreuses.'],
-    checks: ['Régulation à 4 ou 5 L/min robinets', 'Régulation à 5 ou 7 L/min douches', 'Garantie 3 ans Hostaform'],
+    checks: ['Régulation à 4 ou 5 L/min robinets', 'Régulation à 5 et 7 L/min douches ou flexibles de toilette', 'Garantie 3 ans Hostaform'],
     giftKicker: 'Cadeau Exclusif EcoPower',
     giftTitle: 'Sac Débit-Mètre Offert',
     giftText: ['Un sac débit-mètre gradué vous sera livré ', 'gratuitement', " avec chaque Pack Appartement ou Maison. Il vous permet de mesurer votre consommation en 10 secondes sous votre robinet avant et après l'installation !"],
