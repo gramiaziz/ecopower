@@ -8,6 +8,8 @@ return [
     'admin_email' => env('ADMIN_EMAIL', 'admin@ecopower.tn'),
     'admin_password' => env('ADMIN_PASSWORD', 'admin123'),
 
+        'order_notification_email' => env('ORDER_NOTIFICATION_EMAIL'),
+
     'free_delivery_from' => 120,
     'delivery_fee' => 8.0,
 

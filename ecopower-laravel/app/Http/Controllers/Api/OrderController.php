@@ -3,10 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
+use App\Mail\NewOrderNotification;
 use App\Support\Format;
 use App\Support\Konnect;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 use App\Support\PublicError;
 use Throwable;
 
@@ -242,6 +244,11 @@ class OrderController extends Controller
             }
         }
 
+        // Espèces : la commande est ferme tout de suite. Carte : l'email part à la confirmation du paiement.
+        if ($paymentMethod === 'cod') {
+            $this->notifyNewOrder($order['id']);
+        }
+
         return response()->json($order, 201);
     }
 
@@ -334,9 +341,40 @@ class OrderController extends Controller
         if ($paid && $order->status === 'pending') {
             $fields['status'] = 'confirmed';
         }
-        DB::table('orders')->where('id', $order->id)->update($fields);
+        // Le webhook Konnect et le retour du client peuvent arriver en même temps :
+        // seule la requête qui fait réellement passer la commande à « paid » envoie l'email.
+        $updated = DB::table('orders')->where('id', $order->id)
+            ->when($paid, fn ($q) => $q->where('payment_status', '!=', 'paid'))
+            ->update($fields);
+        if ($paid && $updated > 0) {
+            $this->notifyNewOrder($order->id);
+        }
 
         return $status;
+    }
+
+    /** Prévient l'équipe par email. Ne doit jamais faire échouer la commande. */
+    private function notifyNewOrder(string $orderId): void
+    {
+        try {
+            $recipients = array_values(array_filter(
+                array_map('trim', explode(',', (string) (config('ecopower.order_notification_email') ?: config('ecopower.admin_email')))),
+                fn ($email) => filter_var($email, FILTER_VALIDATE_EMAIL)
+            ));
+            if (! $recipients) {
+                return;
+            }
+
+            $order = DB::table('orders')->where('id', $orderId)->first();
+            if (! $order) {
+                return;
+            }
+            $items = DB::table('order_items')->where('order_id', $orderId)->get();
+
+            Mail::to($recipients)->send(new NewOrderNotification($order, $items));
+        } catch (Throwable $e) {
+            report($e);
+        }
     }
 
     /** Annule une commande carte dont le paiement n'a pas pu démarrer (remise en stock). */

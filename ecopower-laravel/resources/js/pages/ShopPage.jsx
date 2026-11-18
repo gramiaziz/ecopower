@@ -36,6 +36,16 @@ export const ShopPage = () => {
         setLoading(false);
       });
   }, []);
+  useEffect(() => {
+  const onKey = (e) => {
+    if (e.key === 'Escape') {
+      if (isImageZoomed) setIsImageZoomed(false);
+      else setActiveModalProduct(null);
+    }
+  };
+  window.addEventListener('keydown', onKey);
+  return () => window.removeEventListener('keydown', onKey);
+}, [isImageZoomed]);
 
   const categories = [
     { id: 'all', label: 'Tous les Articles' },
@@ -251,11 +261,16 @@ export const ShopPage = () => {
 
       {/* Product Detail Modal */}
       {activeModalProduct && (
-        <div className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4">
-          <div className="bg-white rounded-3xl max-w-2xl w-full shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200">
-
-            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50">
-              <span className="text-xs font-bold uppercase text-brand-700 tracking-wider">
+<div
+  className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4"
+  onClick={() => setActiveModalProduct(null)}
+>          
+<div
+  className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200"
+  onClick={(e) => e.stopPropagation()}
+>
+<div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+                <span className="text-xs font-bold uppercase text-brand-700 tracking-wider">
                 Fiche Technique Produit
               </span>
               <button
@@ -266,16 +281,16 @@ export const ShopPage = () => {
               </button>
             </div>
 
-            <div className="p-6 sm:p-8 space-y-6">
+            <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
           <div
-  className="w-full min-h-[350px] sm:min-h-[500px] bg-slate-50 rounded-2xl border border-slate-100 p-3 flex items-center justify-center cursor-zoom-in group relative"
-  onClick={() => setIsImageZoomed(true)}
+  className="w-full min-h-[220px] sm:min-h-[500px] bg-slate-50 rounded-2xl border border-slate-100 p-3 flex items-center justify-center cursor-zoom-in group relative"
+  onClick={() => { setIsImageZoomed(false); setActiveModalProduct(null); }}
 >
   <img
     src={activeModalProduct.image}
     alt={activeModalProduct.name}
-    className="max-h-[500px] w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+    className="max-h-[260px] sm:max-h-[500px] w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
   />
 
   <span className="absolute bottom-3 right-3 bg-white/95 text-brand-800 text-xs font-bold px-3 py-2 rounded-xl shadow-md flex items-center gap-2">
