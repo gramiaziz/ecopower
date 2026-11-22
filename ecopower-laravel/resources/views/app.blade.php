@@ -28,14 +28,14 @@
       n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
       t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
       document,'script','https://connect.facebook.net/en_US/fbevents.js');
-      fbq('init', '1260545362668644');
+      fbq('init', '2319048602282319');
       fbq('track', 'PageView');
     </script>
     @viteReactRefresh
     @vite('resources/js/main.jsx')
   </head>
   <body class="bg-[#f8fafc] text-slate-800 antialiased">
-    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=1260545362668644&ev=PageView&noscript=1" /></noscript>
+    <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=2319048602282319&ev=PageView&noscript=1" /></noscript>
     <div id="root"></div>
     
   </body>
