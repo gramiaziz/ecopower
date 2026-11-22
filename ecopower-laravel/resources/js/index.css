@@ -127,3 +127,41 @@ html[lang="ar"] .font-sans {
 html[lang="ar"] * {
   letter-spacing: 0 !important;
 }
+
+
+/*navbar animation*/
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker-ltr 40s linear infinite;
+}
+.ticker:hover .ticker-track,
+.ticker:active .ticker-track {
+  animation-play-state: paused;
+}
+@keyframes ticker-ltr {
+  from { transform: translateX(-50%); }
+  to   { transform: translateX(0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ticker { overflow-x: auto; }
+  .ticker-track { animation: none; }
+}
+
+/* hero section animations */
+@keyframes float-y {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-14px); }
+}
+.float-slow   { animation: float-y 6s ease-in-out infinite; }
+.float-slower { animation: float-y 9s ease-in-out infinite reverse; }
+
+@keyframes cta-glow {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(249, 115, 22, 0.55); }
+  70%      { box-shadow: 0 0 0 16px rgba(249, 115, 22, 0); }
+}
+.cta-glow { animation: cta-glow 2.2s ease-out infinite; }
+
+@media (prefers-reduced-motion: reduce) {
+  .float-slow, .float-slower, .cta-glow { animation: none; }
+}

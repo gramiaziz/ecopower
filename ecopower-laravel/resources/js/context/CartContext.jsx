@@ -28,7 +28,7 @@ export const CartProvider = ({ children }) => {
       .catch(() => {});
   }, []);
   const [language, setLanguage] = useState(() => {
-    return localStorage.getItem('ecopower_lang') || 'fr';
+    return localStorage.getItem('ecopower_lang') || 'ar';
   });
 
   useEffect(() => {

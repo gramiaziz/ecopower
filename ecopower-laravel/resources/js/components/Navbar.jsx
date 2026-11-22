@@ -30,13 +30,31 @@ export const Navbar = ({ currentTab, setCurrentTab }) => {
     { id: 'references', label: language === 'ar' ? 'مراجعنا' : 'Références', icon: ShieldCheck, mobileOnly: true },
     { id: 'tracking', label: language === 'ar' ? 'تتبع الطلبية' : 'Suivi commande', icon: Truck },
   ];
+  const promoText = language === 'ar'
+    ? '⚡ وفّر حتى 60% في الماء و25% في الغاز • توصيل في 24-48 ساعة لكامل تونس'
+    : '⚡ Économisez jusqu’à 60% d’eau et 25% de gaz • Livraison 24-48h partout en Tunisie';
 
+  const tickerUnit = (key) => (
+    <div
+      key={key}
+      dir={language === 'ar' ? 'rtl' : 'ltr'}
+      className="flex items-center gap-8 pe-8 whitespace-nowrap shrink-0"
+    >
+      <span>{promoText}</span>
+      <span className="md:hidden flex items-center gap-1">
+        <PhoneCall className="w-3.5 h-3.5 text-blue-400" />
+        <span>{language === 'ar' ? 'خدمة الحرفاء:' : 'Service Client:'}</span>
+        <bdi dir="ltr">+216 97 644 988 / +216 55 348 109</bdi>
+      </span>
+      <span className="text-blue-400">•</span>
+    </div>
+  );
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs transition-all w-full overflow-hidden">
       {/* Top blue announcement bar */}
       <div className="bg-blue-950 text-white text-[11px] sm:text-xs py-1.5 px-3 sm:px-4 font-medium tracking-wide">
         <div className="max-w-7xl mx-auto flex items-center justify-between gap-2">
-          <div className="flex items-center gap-2 truncate">
+          {/*<div className="flex items-center gap-2 truncate">
             <span className="inline-block w-2 h-2 rounded-full bg-blue-400 animate-pulse shrink-0"></span>
             <span className="truncate">
               {language === 'ar' 
@@ -44,10 +62,20 @@ export const Navbar = ({ currentTab, setCurrentTab }) => {
                 : '⚡ Économisez jusqu’à 60% d’eau et 25% de gaz • Livraison 24-48h partout en Tunisie'}
             </span>
           </div>
+          */}
+                    <div className="flex items-center gap-2 min-w-0 flex-1">
+            <span className="inline-block w-2 h-2 rounded-full bg-blue-400 animate-pulse shrink-0"></span>
+            <div dir="ltr" className="ticker overflow-hidden flex-1 min-w-0">
+              <span className="sr-only">{promoText}</span>
+              <div className="ticker-track" aria-hidden="true">
+                {Array.from({ length: 6 }).map((_, i) => tickerUnit(i))}
+              </div>
+            </div>
+          </div>
           <div className="hidden md:flex items-center gap-3 text-blue-200 shrink-0">
-            <a href="tel:+21671000000" className="hover:text-white flex items-center gap-1 transition">
+            <a href="tel:+21697644988" className="hover:text-white flex items-center gap-1 transition">
               <PhoneCall className="w-3.5 h-3.5 text-blue-400" />
-              <span>{language === 'ar' ? 'خدمة الحرفاء:' : 'Service Client:'} <span dir="ltr">+216 71 000 000/ +216 55 348 109</span></span>
+              <span>{language === 'ar' ? 'خدمة الحرفاء:' : 'Service Client:'} <span dir="ltr">+216 97 644 988 / +216 55 348 109</span></span>
             </a>
             {isAdmin && (
               <>

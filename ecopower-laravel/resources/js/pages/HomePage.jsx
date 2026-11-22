@@ -29,6 +29,38 @@ const TXT = {
     heroText: 'La solution hydro-économe certifiée Delrin/Hostaform qui régule la pression en Tunisie. Même confort de jet, deux fois moins d’eau et de gaz consommés. Livré chez vous en 24h avec certificat de garantie 3 ans.',
     ctaOrder: 'Commander un Pack Éco',
     ctaSimulate: 'Simuler mes économies',
+    fromPrice: 'À partir de',
+    heroChips: ['Installation en 2 min, sans outils', 'Paiement à la livraison', 'Livraison 24-48h', 'Satisfait ou remboursé 14 jours'],
+    journeyBadge: 'Étape par étape',
+    journeyTitle: 'Équipez votre logement à votre rythme',
+    journeyText: 'Commencez par un pack, puis complétez quand vous voulez. Chaque produit se visse à la main en moins de 2 minutes, sans outils.',
+    journeySteps: [
+      {
+        tag: 'Point de départ',
+        title: 'Commencez par le Pack de Base',
+        desc: 'Un économiseur 5 L/min pour la cuisine et un régulateur de douche, avec le sac débit-mètre offert.',
+        cta: 'Commander le pack',
+        stats: [['Jusqu’à 60%', 'Économie d’eau'], ['+25%', 'Économie gaz STEG']],
+      },
+      {
+        title: 'Complétez point par point',
+        desc: 'Ajoutez un économiseur à l’unité pour chaque autre robinet : lavabo de la salle de bain, deuxième douche, etc.',
+        cta: 'Voir les régulateurs à l’unité',
+        stats: [['Jusqu’à 60%', 'Économie d’eau'], ['+25%', 'Économie gaz STEG']],
+      },
+      {
+        title: 'Terminez par les toilettes',
+        desc: 'L’Eco-Sac WC 3L, imputrescible et garanti à vie, se suspend dans le réservoir.',
+        cta: 'Voir l’Eco-Sac WC',
+        stats: [['3 L', 'économisés par chasse']],
+      },
+    ],
+    journeyAll: 'Vous préférez tout équiper d’un coup ?',
+    journeyAllCta: 'Voir les packs Appartement et Villa',
+ journeyWcNote: 'Gagnez 3 L à chaque fois que vous tirez la chasse',
+ journeyTap: 'Robinet',
+    journeyShower: 'Douche & Flexible',
+    
     trustWater: "Économie d'eau",
     trustGas: 'Économie gaz STEG',
     trustYears: '3 Ans',
@@ -112,6 +144,39 @@ const TXT = {
     heroText: 'الحل اللي يوفّر الماء، مصنوع من Delrin/Hostaform ومعتمد، ويظبط ضغط الماء في تونس. نفس الراحة متاع الماء، وتستهلك نص الماء ونص الغاز. يوصلك لدارك في 24 ساعة مع شهادة ضمان 3 سنين.',
     ctaOrder: 'اطلب باك إيكو',
     ctaSimulate: 'احسب قدّاش باش توفّر',
+    
+    fromPrice: 'ابتداء من',
+    heroChips: ['تركيب في دقيقتين بلا عدّة', 'الخلاص عند الاستلام', 'توصيل في 24-48 ساعة', 'راضي ولا نرجعولك فلوسك في 14 يوم'],
+
+     journeyBadge: 'خطوة بخطوة',
+    journeyTitle: 'جهّز دارك على راحتك',
+    journeyText: 'ابدا بباك، وكمّل كي تحب. كل منتوج يتسكّر بيدك في أقل من دقيقتين، بلا عدّة.',
+    journeySteps: [
+      {
+        tag: 'نقطة البداية',
+        title: 'ابدا بالباك الأساسي (Pack de Base)',
+        desc: 'موفّر 5 لتر في الدقيقة للكوجينة + منظّم للدوش، مع كيس قياس تدفّق المياه مجانًا.',
+        cta: 'اطلب الباك',
+        stats: [['حتى 60%', 'توفير في الماء'], ['+25%', 'توفير في غاز الستاغ']],
+      },
+      {
+        title: 'كمّل نقطة بنقطة',
+        desc: 'زيد موفّر بالوحدة لكل روبيني آخر: لافابو بيت البانو، دوش ثاني...',
+        cta: 'شوف الموفّرات بالوحدة',
+        stats: [['حتى 60%', 'توفير في الماء'], ['+25%', 'توفير في غاز الستاغ']],
+      },
+      {
+        title: 'ختمها بالتواليت',
+        desc: 'إيكو-ساك 3L ما يتحلّش ومضمون مدى الحياة، يتعلّق في الشاسة.',
+        cta: 'شوف الإيكو-ساك',
+        stats: [['3 لتر', 'توفير في كل سيفون']],
+      },
+    ],
+    journeyAll: 'تحب تجهّز دارك كاملة مرة وحدة؟',
+    journeyAllCta: 'شوف باكات الشقة والفيلا',
+    journeyWcNote: 'تربح 3 لتر في كل مرة تسحب الساش',
+  journeyTap: 'روبيني',
+    journeyShower: ' دوش & Flexible',
     trustWater: 'توفير في الماء',
     trustGas: 'توفير في غاز الستاغ',
     trustYears: '3 سنين',
@@ -121,19 +186,19 @@ const TXT = {
     cardKicker: 'الحل رقم 1 في تونس',
     cardTitle: 'باك الشقة إيكو 4L',
     cardSub: '2 مخفّضات للروبيني + 1 منظّم للدوش + 1 إيكو-ساك للتواليت 3L',
-    ttc: 'بالأداءات',
-    giftMeter: 'كيس قيس الصبيب هدية',
+    ttc: ' شامل الأداءات (TTC).',
+    giftMeter: 'كيس قياس تدفّق المياه مجانًا',
     addToCart: (price) => `زيد للسلة (${price} د.ت)`,
     cardFooter: 'الخلاص عند الاستلام • راضي ولا نرجعولك فلوسك في 14 يوم',
     clipBadge: 'تركيب سريع بلا عدّة',
     clipTitle: 'وين تركّب الموفّرات في دارك؟',
     clipText: 'كل نقطة ماء في دارك تنجم تجهّزها في أقل من دقيقتين، باش توقف التبذير اللي يعملو ضغط الصوناد.',
-    flowLabel: 'الصبيب:',
+    flowLabel: 'التدفّق:',
     step: 'المرحلة',
     waterSaving: 'توفير الماء',
     gasSaving: 'توفير الغاز',
     clipZones: [
-      { zone: 'مغسلة الكوجينة', flow: '4 ولا 5 L/min', desc: 'حلقة إينوكس + خرطوشة Delrin ضد الكلس.' },
+      { zone: 'لافابو الكوجينة', flow: '4 ولا 5 L/min', desc: 'حلقة إينوكس + خرطوشة Delrin ضد الكلس.' },
       { zone: 'لافابو بيت البانو', flow: '4 L/min', desc: 'ماء ناعم فيه هواء، وما يطرطشش.' },
       { zone: 'الدوش والفليكسيبل', flow: '5 ولا 7 L/min', desc: 'منظّم إينوكس يتحط تحت فليكسيبل الدوش.' },
       { zone: 'التواليت', flow: '3 لتر في كل سيفون', desc: 'إيكو-ساك 3L ما يتحلّش، يتعلّق في الشاسة.' },
@@ -147,13 +212,13 @@ const TXT = {
       'pack-appartement-4l': {
         name: 'باك الشقة 4L',
         badge: 'الأكثر طلبًا',
-        desc: 'مثالي للشقة S+1 / S+2 : 2 مخفّضات 4L/min + 1 منظّم للدوش + 1 إيكو-ساك 3L + كيس قيس الصبيب بلاش',
-        features: ['توفير حتى 60% في الماء', 'توفير +25% في غاز الستاغ', 'ضمان 3 سنين والإيكو-ساك مضمون مدى الحياة', 'كيس قيس الصبيب هدية'],
+        desc: 'مثالي للشقة S+1 / S+2 : 2 مخفّضات 4L/min + 1 منظّم للدوش + 1 إيكو-ساك 3L + كيس قيس التدفّق بلاش',
+        features: ['توفير حتى 60% في الماء', 'توفير +25% في غاز الستاغ', 'ضمان 3 سنين والإيكو-ساك مضمون مدى الحياة', 'كيس قياس تدفّق المياه مجانًا'],
       },
       'pack-maison-4l': {
         name: 'باك الدار / الفيلا 4L',
         badge: 'دار كبيرة',
-        desc: 'تجهيز كامل للفيلا : 4 مخفّضات 4L/min + 2 منظّمات للدوش والتواليت + 2 إيكو-ساك 3L + كيس قيس الصبيب',
+        desc: 'تجهيز كامل للفيلا : 4 مخفّضات 4L/min + 2 منظّمات للدوش والتواليت + 2 إيكو-ساك 3L + كيس قيس التدفّق',
         features: ['مثالي من 4 لـ 8 أشخاص', 'زوز بيوت بانو', 'توفير في العام أكثر من 280 د.ت', 'يتركّب في دقيقتين'],
       },
     },
@@ -191,7 +256,7 @@ const TXT = {
 };
 
 export const HomePage = ({ setCurrentTab }) => {
-  const { addToCart, language } = useCart();
+    const { addToCart, language, setIsCartOpen } = useCart();
   const [openFaq, setOpenFaq] = useState(null);
   const t = TXT[language] || TXT.fr;
 
@@ -259,6 +324,33 @@ export const HomePage = ({ setCurrentTab }) => {
   const heroCards = (heroes.length ? heroes : [null]).map(buildHeroCard);
   const twoHeroes = heroCards.length > 1;
 
+    const fromPrice = Math.min(...heroCards.map((c) => c.price));
+// Produit de départ : le moins cher des produits vedettes (le Pack de Base)
+  const starter = heroCards.reduce((min, c) => (c.price < min.price ? c : min), heroCards[0]);
+
+  // Une entrée par étape : image(s) et action du bouton
+  const journeyMeta = [
+    {
+      images: [{ src: starter.image }],
+      onClick: () => {
+        addToCart({ id: starter.id, name: starter.name, price: starter.price, image: starter.image });
+        setIsCartOpen(true);
+      },
+    },
+         {
+      images: [
+        { src: '/products/cartouche_hydro_verte_paire.jpg', caption: `${t.journeyTap} 4 L/min`, pos: '50% 44%' },
+        { src: '/products/cartouche_hydro_verte.jpg', caption: `${t.journeyTap} 5 L/min`, pos: '50% 62%' },
+        { src: '/products/bague_mousseur_grille_bleue.jpg', caption: `${t.journeyShower} 5 L/min`, pos: '50% 72%' },
+        { src: '/products/bague_mousseur_complet.jpg', caption: `${t.journeyShower} 7 L/min`, pos: '50% 94%' },
+      ],
+      onClick: () => setCurrentTab('shop'),
+    },
+    {
+      images: [{ src: '/products/ecosac_wc_3l.jpg', caption: t.journeyWcNote }],
+      onClick: () => setCurrentTab('shop'),
+    },
+  ];
 const renderHeroCard = (heroCard) => (
   <div
     key={heroCard.id}
@@ -293,11 +385,11 @@ const renderHeroCard = (heroCard) => (
       />
     </div>
 
-    <div className="my-6 p-5 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center">
+    <div className="my-6 p-2 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center">
       <img
         src={heroCard.image}
         alt={heroCard.title}
-        className="h-64 object-contain drop-shadow-md hover:scale-105 transition-transform"
+        className="w-full h-80 sm:h-[28rem] object-contain drop-shadow-md hover:scale-[1.03] transition-transform"
       />
     </div>
 
@@ -357,8 +449,9 @@ const renderHeroCard = (heroCard) => (
     waterSaved: '+60%',
     gasSaved: '+25%',
     imgs: [
-      { src: '/products/cartouche_hydro_verte.jpg', flow: '4 L/min' },
-      { src: '/products/cartouche_hydro_verte_paire.jpg', flow: '5 L/min' },
+      { src: '/products/cartouche_hydro_verte_paire.jpg', flow: '4 L/min' },
+      { src: '/products/cartouche_hydro_verte.jpg', flow: '5 L/min' }
+      
     ],
   },
     {
@@ -387,153 +480,255 @@ const renderHeroCard = (heroCard) => (
 
 
       {/* 1. HERO SECTION */}
-    <section className="relative overflow-hidden pt-8 pb-16 sm:pt-12 sm:pb-24 bg-gradient-to-b from-brand-50/60 via-white to-slate-50">
-  <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12">
+  <section className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-brand-800 to-skywater-700 text-white pt-10 pb-28 sm:pt-16 sm:pb-36">
 
-    {/* Texte : reste en premier dans le code (bon pour le SEO), mais s'affiche EN DESSOUS (order-2) */}
-    <div className="order-1 max-w-3xl mx-auto space-y-6 text-center">
+        {/* Décor : halos lumineux et gouttes qui flottent (purement décoratif) */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+          <div className="absolute -top-24 -start-24 w-80 h-80 rounded-full bg-sky-400/20 blur-3xl" />
+          <div className="absolute top-1/3 -end-24 w-96 h-96 rounded-full bg-blue-400/20 blur-3xl" />
+          <Droplets className="float-slow absolute top-16 start-[8%] w-10 h-10 text-sky-300/40" />
+          <Droplets className="float-slower absolute top-40 end-[10%] w-14 h-14 text-sky-200/30" />
+          <Droplets className="float-slow absolute bottom-40 start-[14%] w-8 h-8 text-sky-200/30" />
+        </div>
 
-      <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-brand-100 text-brand-800 text-xs font-bold tracking-wide">
-        <Sparkles className="w-4 h-4 text-brand-600" />
-        <span>{t.heroBadge}</span>
-      </div>
+        <div className="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col gap-12">
 
-      <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black text-slate-900 tracking-tight leading-[1.15] font-serif">
-        {t.heroTitle[0]}<span className="text-brand-700">{t.heroTitle[1]}</span>{t.heroTitle[2]}<span className="text-energy-500">{t.heroTitle[3]}</span>
-      </h1>
+          {/* Texte */}
+          <div className="order-1 max-w-3xl mx-auto space-y-6 text-center">
 
-      <p className="text-base sm:text-lg text-slate-600 leading-relaxed max-w-2xl mx-auto">
-        {t.heroText}
-      </p>
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-sky-100 text-xs font-bold tracking-wide">
+              <Sparkles className="w-4 h-4 text-amber-300" />
+              <span>{t.heroBadge}</span>
+            </div>
 
-      {/* CTAs */}
-      <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-        <button
-          onClick={() => setCurrentTab('shop')}
-          className="w-full sm:w-auto bg-gradient-to-r from-energy-500 to-energy-600 hover:from-energy-600 hover:to-energy-500 text-white font-extrabold px-8 py-4 rounded-2xl text-base shadow-xl shadow-energy-500/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
+            <h1 className="text-4xl sm:text-5xl lg:text-6xl font-black tracking-tight leading-[1.25] font-serif text-white">
+              {t.heroTitle[0]}
+              <span className="bg-gradient-to-r from-sky-300 to-cyan-200 bg-clip-text text-transparent">{t.heroTitle[1]}</span>
+              {t.heroTitle[2]}
+              <span className="inline-block bg-orange-500 text-white px-3 rounded-xl -rotate-2 shadow-lg shadow-orange-900/30">{t.heroTitle[3]}</span>
+            </h1>
+
+            <p className="text-base sm:text-lg text-sky-100/90 leading-relaxed max-w-2xl mx-auto">
+              {t.heroText}
+            </p>
+
+            {/* Pastille de prix */}
+            <div className="inline-flex items-baseline gap-2 bg-white text-brand-900 rounded-2xl px-5 py-2 shadow-lg">
+              <span className="text-xs font-bold text-slate-500">{t.fromPrice}</span>
+              <span className="text-3xl font-black" dir="ltr">{fromPrice.toFixed(3)}</span>
+              <span className="text-sm font-bold">{t.cur}</span>
+            </div>
+
+            {/* CTAs */}
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
+              <button
+                onClick={() => setCurrentTab('shop')}
+                className="cta-glow w-full sm:w-auto bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-500 text-white font-extrabold px-8 py-4 rounded-2xl text-lg shadow-xl shadow-orange-900/30 flex items-center justify-center gap-2 transition-all hover:scale-105 active:scale-95"
+              >
+                <ShoppingBag className="w-5 h-5" />
+                <span>{t.ctaOrder}</span>
+              </button>
+
+              <button
+                onClick={() => setCurrentTab('calculator')}
+                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 backdrop-blur text-white border border-white/30 font-bold px-7 py-4 rounded-2xl text-base flex items-center justify-center gap-2 transition-all"
+              >
+                <span>{t.ctaSimulate}</span>
+                <ArrowRight className="w-4 h-4 rtl:rotate-180" />
+              </button>
+            </div>
+
+            {/* Garanties rapides */}
+            <div className="flex flex-wrap items-center justify-center gap-x-5 gap-y-2 text-xs sm:text-sm text-sky-100">
+              {t.heroChips.map((chip) => (
+                <span key={chip} className="inline-flex items-center gap-1.5">
+                  <CheckCircle2 className="w-4 h-4 text-emerald-300 shrink-0" />
+                  {chip}
+                </span>
+              ))}
+            </div>
+
+            {/* Chiffres clés */}
+            <div className="pt-5 grid grid-cols-3 gap-2 border-t border-white/15 text-center">
+              <div>
+                <div className="text-2xl sm:text-3xl font-black text-white">+60%</div>
+                <div className="text-[11px] sm:text-xs text-sky-200 font-semibold">{t.trustWater}</div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-black text-amber-300">+25%</div>
+                <div className="text-[11px] sm:text-xs text-sky-200 font-semibold">{t.trustGas}</div>
+              </div>
+              <div>
+                <div className="text-2xl sm:text-3xl font-black text-sky-300">{t.trustYears}</div>
+                <div className="text-[11px] sm:text-xs text-sky-200 font-semibold">{t.trustWarranty}</div>
+              </div>
+            </div>
+
+          </div>
+
+          {/* Cartes vedettes (inchangées) */}
+          <div className="order-2">
+            <div
+              className={
+                twoHeroes
+                  ? 'grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch'
+                  : 'max-w-xl mx-auto'
+              }
+            >
+              {heroCards.map((heroCard) => renderHeroCard(heroCard))}
+            </div>
+          </div>
+
+        </div>
+
+        {/* Vague de transition vers le reste de la page (même couleur que le fond du site) */}
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 1440 80"
+          preserveAspectRatio="none"
+          className="absolute bottom-0 left-0 w-full h-12 sm:h-20 text-slate-50"
+          fill="currentColor"
         >
-          <ShoppingBag className="w-5 h-5" />
-          <span>{t.ctaOrder}</span>
-        </button>
-
-        <button
-          onClick={() => setCurrentTab('calculator')}
-          className="w-full sm:w-auto bg-white hover:bg-slate-50 text-slate-800 border-2 border-slate-200 font-bold px-7 py-4 rounded-2xl text-base flex items-center justify-center gap-2 transition-all hover:border-brand-500 hover:text-brand-700"
-        >
-          <span>{t.ctaSimulate}</span>
-          <ArrowRight className="w-4 h-4 rtl:rotate-180" />
-        </button>
-      </div>
-
-      {/* Trust bullets */}
-      <div className="pt-4 grid grid-cols-3 gap-2 border-t border-slate-200/80 text-center">
-        <div>
-          <div className="text-xl sm:text-2xl font-black text-brand-800">+60%</div>
-          <div className="text-[11px] text-slate-500 font-semibold">{t.trustWater}</div>
-        </div>
-        <div>
-          <div className="text-xl sm:text-2xl font-black text-energy-500">+25%</div>
-          <div className="text-[11px] text-slate-500 font-semibold">{t.trustGas}</div>
-        </div>
-        <div>
-          <div className="text-xl sm:text-2xl font-black text-blue-600">{t.trustYears}</div>
-          <div className="text-[11px] text-slate-500 font-semibold">{t.trustWarranty}</div>
-        </div>
-      </div>
-
-    </div>
-
-    {/* Cartes vedettes : s'affichent EN HAUT */}
-    <div className="order-2">
-      <div
-        className={
-          twoHeroes
-            ? 'grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch'
-            : 'max-w-xl mx-auto'
-        }
-      >
-        {heroCards.map((heroCard) => renderHeroCard(heroCard))}
-      </div>
-    </div>
-
-  </div>
-</section>
+          <path d="M0,40 C240,80 480,0 720,30 C960,60 1200,70 1440,20 L1440,80 L0,80 Z" />
+        </svg>
+      </section>
 
       {/* 2. SCHÉMA CLIP & ZONES D'INSTALLATION (Demandé par Pascal Fabre) */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto mb-12">
+    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-skywater-100 text-skywater-800 text-xs font-bold uppercase tracking-wider mb-3">
             <Zap className="w-4 h-4 text-skywater-600" />
-            <span>{t.clipBadge}</span>
+            <span>{t.journeyBadge}</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 font-serif">
-            {t.clipTitle}
+            {t.journeyTitle}
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-2">
-            {t.clipText}
+            {t.journeyText}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          {clipZones.map((item, idx) => (
-            <div
-              key={idx}
-              className="bg-white rounded-3xl border border-slate-200/80 p-5 shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col justify-between group hover:-translate-y-1"
-            >
-              <div>
-                <div className="h-44 flex items-center justify-center gap-4 p-2">
-  {item.imgs ? (
-    item.imgs.map((image, imageIdx) => (
-      <div
-        key={imageIdx}
-        className="flex flex-col items-center justify-center w-1/2 h-full"
-      >
-        <img
-          src={image.src}
-          alt={`Économiseur évier cuisine ${image.flow}`}
-          className="max-h-[75%] max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
-        />
-        <span className="mt-2 text-sm font-semibold">
-          {image.flow}
-        </span>
-      </div>
-    ))
+        <div className="relative">
+          {/* Ligne pointillée qui relie les étapes (grand écran) */}
+          <div
+            aria-hidden="true"
+            className="hidden lg:block absolute top-5 inset-x-[17%] border-t-2 border-dashed border-brand-300"
+          />
+
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-6">
+            {t.journeySteps.map((step, idx) => {
+              const meta = journeyMeta[idx];
+              const first = idx === 0;
+              return (
+                <div
+                  key={idx}
+                  className={`relative mt-5 bg-white rounded-3xl p-6 pt-10 border shadow-xs hover:shadow-xl transition-all duration-300 flex flex-col ${
+                    first ? 'border-orange-400 ring-2 ring-orange-200' : 'border-slate-200/80'
+                  }`}
+                >
+                  {/* Numéro de l'étape */}
+                  <div className="absolute -top-5 start-6 z-10 w-10 h-10 rounded-full bg-brand-700 text-white font-black flex items-center justify-center ring-4 ring-slate-50">
+                    {idx + 1}
+                  </div>
+
+                  {first && (
+                    <span className="absolute -top-3 end-5 bg-orange-500 text-white text-[11px] font-black px-3 py-1 rounded-full shadow">
+                      {step.tag}
+                    </span>
+                  )}
+
+                  {/* Images */}
+{/* Zone image : même hauteur sur les 3 cartes pour tout aligner */}
+<div className="h-72 sm:h-80 bg-slate-50 rounded-2xl border border-slate-100 p-3 overflow-hidden">
+  {meta.images.length > 2 ? (
+    /* Carte 2 : grille 2x2 qui remplit exactement la zone */
+    <div className="grid grid-cols-2 grid-rows-2 gap-3 h-full">
+      {meta.images.map((img) => (
+        <div key={img.src} className="flex flex-col min-h-0">
+          <div className="flex-1 min-h-0 overflow-hidden rounded-xl bg-white border border-slate-200">
+            <img
+              src={img.src}
+              alt={`${step.title} - ${img.caption}`}
+              loading="lazy"
+              className="w-full h-full object-cover scale-125"
+              style={{ objectPosition: img.pos, filter: 'brightness(1.1) contrast(1.05)' }}
+            />
+          </div>
+          <span className="mt-1.5 text-[11px] font-bold text-slate-700 text-center leading-tight">
+            {img.caption}
+          </span>
+        </div>
+      ))}
+    </div>
   ) : (
-    <img
-      src={item.img}
-      alt={item.zone}
-      className="max-h-full max-w-full object-contain group-hover:scale-105 transition-transform duration-300"
-    />
+    /* Cartes 1 et 3 : une grande image centrée, légende dessous */
+    <div className="h-full flex flex-col items-center justify-center gap-2">
+      <img
+        src={meta.images[0].src}
+        alt={meta.images[0].caption ? `${step.title} - ${meta.images[0].caption}` : step.title}
+        loading="lazy"
+        className="flex-1 min-h-0 w-full object-contain rounded-xl"
+      />
+      {meta.images[0].caption && (
+        <span className="text-sm font-bold text-slate-700 text-center leading-snug">
+          {meta.images[0].caption}
+        </span>
+      )}
+    </div>
   )}
 </div>
 
+                 <h3 className="mt-5 text-xl font-extrabold text-slate-900 font-serif">{step.title}</h3>
+<p className="text-sm text-slate-600 leading-relaxed mt-2 min-h-[4.5rem]">{step.desc}</p>
 
-                
-                <div className="flex items-center justify-between mb-2">
-                  <span className="text-xs font-bold px-2 py-0.5 rounded-md bg-brand-50 text-brand-700">
-                    {t.flowLabel} {item.flow}
-                  </span>
-                  <span className="text-[10px] font-black text-slate-400">{t.step} {idx + 1}</span>
+                  {first && (
+                    <div className="mt-3 flex items-baseline gap-2">
+                      <span className="text-xs font-bold text-slate-500">{t.fromPrice}</span>
+                      <span className="text-2xl font-black text-brand-900" dir="ltr">{starter.price.toFixed(3)}</span>
+                      <span className="text-sm font-bold text-slate-600">{t.cur}</span>
+                    </div>
+                  )}
+
+                  {/* Économies */}
+                  <div className={`mt-auto pt-5 grid gap-2 text-center text-xs ${step.stats.length > 1 ? 'grid-cols-2' : 'grid-cols-1'}`}>
+                    {step.stats.map(([value, label], sIdx) => (
+                      <div
+                        key={label}
+                        className={`${sIdx === 0 ? 'bg-skywater-50 text-skywater-800' : 'bg-amber-50 text-amber-900'} p-2 rounded-xl`}
+                      >
+                        <div className="font-black text-sm">{value}</div>
+                        <div className="text-[10px] font-semibold text-slate-500">{label}</div>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={meta.onClick}
+                    className={`mt-4 w-full font-extrabold py-3 px-4 rounded-xl text-sm flex items-center justify-center gap-2 transition-all ${
+                      first
+                        ? 'bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-600 hover:to-amber-500 text-white shadow-md shadow-orange-500/25 hover:scale-[1.02]'
+                        : 'border-2 border-brand-200 text-brand-700 hover:bg-brand-50'
+                    }`}
+                  >
+                    {first && <ShoppingBag className="w-4 h-4" />}
+                    <span>{step.cta}</span>
+                  </button>
                 </div>
+              );
+            })}
+          </div>
+        </div>
 
-                <h3 className="font-extrabold text-base text-slate-900 mb-1">{item.zone}</h3>
-                <p className="text-xs text-slate-500 leading-relaxed mb-4">{item.desc}</p>
-              </div>
-
-              {/* Savings badges */}
-              <div className="pt-3 border-t border-slate-100 grid grid-cols-2 gap-2 text-center text-xs">
-                <div className="bg-skywater-50 text-skywater-800 p-2 rounded-xl">
-                  <div className="font-black text-sm text-skywater-700">{item.waterSaved}</div>
-                  <div className="text-[10px] font-semibold text-slate-500">{t.waterSaving}</div>
-                </div>
-                <div className="bg-amber-50 text-amber-900 p-2 rounded-xl">
-                  <div className="font-black text-sm text-energy-600">{item.gasSaved}</div>
-                  <div className="text-[10px] font-semibold text-slate-500">{t.gasSaving}</div>
-                </div>
-              </div>
-
-            </div>
-          ))}
+        {/* Alternative : tout équiper d'un coup */}
+        <div className="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3 text-center">
+          <span className="text-sm font-semibold text-slate-700">{t.journeyAll}</span>
+          <button
+            onClick={() => setCurrentTab('particuliers')}
+            className="text-sm font-bold text-brand-700 hover:text-brand-900 flex items-center gap-1 group"
+          >
+            <span>{t.journeyAllCta}</span>
+            <ArrowRight className="w-4 h-4 rtl:rotate-180 group-hover:translate-x-1 rtl:group-hover:-translate-x-1 transition-transform" />
+          </button>
         </div>
       </section>
 
