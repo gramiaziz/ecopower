@@ -13,6 +13,7 @@
       fbq('init', '2319048602282319');
       fbq('track', 'PageView');
     </script>
+    <!-- blade-served -->
     <title>ECOPOWER Tunisie - Solutions Hydro-Economes et Economie d'Energie</title>
     <meta name="description" content="Reduisez vos factures SONEDE et STEG jusqu'a 60% avec les dispositifs hydro-economes certifies EcoPower. Vente en ligne, packs pour particuliers et professionnels. Livraison partout en Tunisie." />
     <meta name="keywords" content="hydro econome tunisie, economie eau, SONEDE, dispositifs eau, eco robinets, pomme douche economique, eco-sac WC, ecopower tunisie" />
