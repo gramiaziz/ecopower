@@ -89,7 +89,8 @@ export const CartProvider = ({ children }) => {
   const pickupDiscount = pickupDiscountFor(cart, pickupIds);
   const discount = isPickup ? pickupDiscount : 0;
 
-  const deliveryFee = cart.length === 0 || isPickup ? 0 : subtotal >= 120 ? 0 : 8.0;
+  //const deliveryFee = cart.length === 0 || isPickup ? 0 : subtotal >= 120 ? 0 : 8.0;
+  const deliveryFee = cart.length === 0 || isPickup ? 0 : 8.0;
 
   const total = Math.round((subtotal - discount + deliveryFee) * 100) / 100;
 

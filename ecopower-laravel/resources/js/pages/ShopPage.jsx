@@ -37,15 +37,15 @@ export const ShopPage = () => {
       });
   }, []);
   useEffect(() => {
-  const onKey = (e) => {
-    if (e.key === 'Escape') {
-      if (isImageZoomed) setIsImageZoomed(false);
-      else setActiveModalProduct(null);
-    }
-  };
-  window.addEventListener('keydown', onKey);
-  return () => window.removeEventListener('keydown', onKey);
-}, [isImageZoomed]);
+    const onKey = (e) => {
+      if (e.key === 'Escape') {
+        if (isImageZoomed) setIsImageZoomed(false);
+        else setActiveModalProduct(null);
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [isImageZoomed]);
 
   const categories = [
     { id: 'all', label: 'Tous les Articles' },
@@ -91,7 +91,7 @@ export const ShopPage = () => {
           <Truck className="w-5 h-5 text-sky-300" />
           <div>
             <div className="text-white font-bold">Livraison Partout en Tunisie</div>
-            <div className="text-slate-300 text-[11px]">Gratuite dès 120 DT d'achat</div>
+            <div className="text-slate-300 text-[11px]">Livraison rapide 24-48h à domicile avec paiement en espèces.</div>
           </div>
         </div>
       </div>
@@ -123,11 +123,10 @@ export const ShopPage = () => {
             <button
               key={cat.id}
               onClick={() => setSelectedCategory(cat.id)}
-              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${
-                selectedCategory === cat.id
+              className={`px-4 py-2 rounded-xl text-xs font-bold whitespace-nowrap transition-all ${selectedCategory === cat.id
                   ? 'bg-brand-700 text-white shadow-xs scale-105'
                   : 'bg-slate-100 text-slate-600 hover:bg-slate-200'
-              }`}
+                }`}
             >
               {cat.label}
             </button>
@@ -168,14 +167,14 @@ export const ShopPage = () => {
                       Pack Éco
                     </span>
                   )}
-{/* Badge Satisfait ou Remboursé */}
+                  {/* Badge Satisfait ou Remboursé */}
 
-  <img
-    src="/garantie-14-jours.webp"
-    alt="14 jours satisfait ou remboursé"
-    className="absolute bottom-1 right-1 w-16 sm:w-20 h-auto object-contain z-10 drop-shadow-sm"
-  loading="lazy"
-  />
+                  <img
+                    src="/garantie-14-jours.webp"
+                    alt="14 jours satisfait ou remboursé"
+                    className="absolute bottom-1 right-1 w-16 sm:w-20 h-auto object-contain z-10 drop-shadow-sm"
+                    loading="lazy"
+                  />
 
                   {/* Badge Garantie */}
                   {product.warranty && (
@@ -238,9 +237,8 @@ export const ShopPage = () => {
                       {product.price.toFixed(3)} <span className="text-xs font-bold text-slate-500">DT</span>
                     </span>
                   </div>
-                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${
-                    product.stock > 10 ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
-                  }`}>
+                  <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full ${product.stock > 10 ? 'bg-blue-50 text-blue-700' : 'bg-amber-50 text-amber-700'
+                    }`}>
                     {product.stock > 0 ? `En Stock (${product.stock})` : 'Sur Commande'}
                   </span>
                 </div>
@@ -261,16 +259,16 @@ export const ShopPage = () => {
 
       {/* Product Detail Modal */}
       {activeModalProduct && (
-<div
-  className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4"
-  onClick={() => setActiveModalProduct(null)}
->          
-<div
-  className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200"
-  onClick={(e) => e.stopPropagation()}
->
-<div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
-                <span className="text-xs font-bold uppercase text-brand-700 tracking-wider">
+        <div
+          className="fixed inset-0 z-50 overflow-y-auto bg-slate-900/70 backdrop-blur-xs flex items-center justify-center p-4"
+          onClick={() => setActiveModalProduct(null)}
+        >
+          <div
+            className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 overflow-hidden animate-in zoom-in-95 duration-200"
+            onClick={(e) => e.stopPropagation()}
+          >
+            <div className="p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+              <span className="text-xs font-bold uppercase text-brand-700 tracking-wider">
                 Fiche Technique Produit
               </span>
               <button
@@ -283,21 +281,21 @@ export const ShopPage = () => {
 
             <div className="p-6 sm:p-8 space-y-6 overflow-y-auto flex-1">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
-          <div
-  className="w-full min-h-[220px] sm:min-h-[500px] bg-slate-50 rounded-2xl border border-slate-100 p-3 flex items-center justify-center cursor-zoom-in group relative"
-  onClick={() => { setIsImageZoomed(false); setActiveModalProduct(null); }}
->
-  <img
-    src={activeModalProduct.image}
-    alt={activeModalProduct.name}
-    className="max-h-[260px] sm:max-h-[500px] w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
-  />
+                <div
+                  className="w-full min-h-[220px] sm:min-h-[500px] bg-slate-50 rounded-2xl border border-slate-100 p-3 flex items-center justify-center cursor-zoom-in group relative"
+                  onClick={() => setIsImageZoomed(true)}
+                >
+                  <img
+                    src={activeModalProduct.image}
+                    alt={activeModalProduct.name}
+                    className="max-h-[260px] sm:max-h-[500px] w-full object-contain transition-transform duration-300 group-hover:scale-[1.02]"
+                  />
 
-  <span className="absolute bottom-3 right-3 bg-white/95 text-brand-800 text-xs font-bold px-3 py-2 rounded-xl shadow-md flex items-center gap-2">
-    <Eye className="w-4 h-4" />
-    Agrandir l'image
-  </span>
-</div>
+                  <span className="absolute bottom-3 right-3 bg-white/95 text-brand-800 text-xs font-bold px-3 py-2 rounded-xl shadow-md flex items-center gap-2">
+                    <Eye className="w-4 h-4" />
+                    Agrandir l'image
+                  </span>
+                </div>
                 <div className="space-y-3">
                   <h3 className="text-xl font-extrabold text-slate-900 font-serif">
                     {activeModalProduct.name}
@@ -353,32 +351,32 @@ export const ShopPage = () => {
 
           </div>
         </div>
-        
+
       )}
-{/* Image Zoom - Plein écran */}
-{isImageZoomed && activeModalProduct && (
-  <div
-    className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-3 sm:p-8 cursor-zoom-out"
-    onClick={() => setIsImageZoomed(false)}
-  >
-    <button
-      onClick={() => setIsImageZoomed(false)}
-      className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full"
-    >
-      <X className="w-6 h-6" />
-    </button>
+      {/* Image Zoom - Plein écran */}
+      {isImageZoomed && activeModalProduct && (
+        <div
+          className="fixed inset-0 z-[100] bg-black/95 flex items-center justify-center p-3 sm:p-8 cursor-zoom-out"
+          onClick={() => setIsImageZoomed(false)}
+        >
+          <button
+            onClick={() => setIsImageZoomed(false)}
+            className="absolute top-4 right-4 z-10 bg-white/20 hover:bg-white/30 text-white p-3 rounded-full"
+          >
+            <X className="w-6 h-6" />
+          </button>
 
-    <img
-      src={activeModalProduct.image}
-      alt={activeModalProduct.name}
-      className="max-w-full max-h-full object-contain"
-    />
+          <img
+            src={activeModalProduct.image}
+            alt={activeModalProduct.name}
+            className="max-w-full max-h-full object-contain"
+          />
 
-    <span className="absolute bottom-5 text-white/80 text-xs">
-      Cliquez pour fermer
-    </span>
-  </div>
-)}
+          <span className="absolute bottom-5 text-white/80 text-xs">
+            Cliquez pour fermer
+          </span>
+        </div>
+      )}
     </div>
   );
 };

@@ -10,7 +10,7 @@ return [
 
         'order_notification_email' => env('ORDER_NOTIFICATION_EMAIL'),
 
-    'free_delivery_from' => 120,
+    //'free_delivery_from' => 120,
     'delivery_fee' => 8.0,
 
     // Retrait au local : pas de frais de livraison et remise sur les produits cochés

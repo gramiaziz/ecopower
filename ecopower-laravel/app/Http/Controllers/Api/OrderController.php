@@ -173,8 +173,11 @@ class OrderController extends Controller
                 $discount = $deliveryMethod === 'pickup'
                     ? round($pickupPacksTotal * config('ecopower.pickup_discount_rate'), 2)
                     : 0.0;
+                /*removed because free delivery is disabled in config/ecopower.php 
                 $deliveryFee = $deliveryMethod === 'pickup' || $subtotal >= config('ecopower.free_delivery_from')
-                    ? 0 : config('ecopower.delivery_fee');
+                    ? 0 : config('ecopower.delivery_fee');*/
+
+                $deliveryFee = $deliveryMethod === 'pickup' ? 0 : config('ecopower.delivery_fee');
                 $total = $subtotal - $discount + $deliveryFee;
 
                 DB::table('orders')->insert([
