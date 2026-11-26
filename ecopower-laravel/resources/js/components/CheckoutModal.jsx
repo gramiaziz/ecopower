@@ -109,7 +109,7 @@ export const CheckoutModal = ({ onOrderPlaced, onTrackOrder }) => {
           paymentMethod,
           items: cart.map((item) => ({ productId: item.product.id, name: item.product.name, quantity: item.quantity })),
           notes: form.notes.trim(),
-        }),
+        },),
       });
 
       const data = await res.json().catch(() => ({}));
@@ -131,6 +131,27 @@ export const CheckoutModal = ({ onOrderPlaced, onTrackOrder }) => {
         window.location.assign(data.payUrl);
         return;
       }
+            if (data.payUrl) {
+        // Paiement par carte : le client continue sur la page sécurisée Konnect,
+        // puis revient sur /tracking où le paiement est vérifié.
+        clearCart();
+        setDeliveryMethod('delivery');
+        setPaymentMethod('cod');
+        window.location.assign(data.payUrl);
+        return;
+      }
+
+      // ✅ Purchase pour espèces à la livraison / retrait au local
+      try {
+        window.fbq?.('track', 'Purchase', {
+          value: Number(data.total),
+          currency: 'TND',
+          content_type: 'product',
+          content_ids: cart.map((i) => String(i.product.id)),
+          num_items: cart.reduce((n, i) => n + i.quantity, 0),
+        }, { eventID: 'order_' + data.id });
+      } catch { /* le suivi ne doit jamais bloquer la commande */ }
+
       setSuccessOrder(data);
       setForm(EMPTY_FORM);
       setTouched(false);
