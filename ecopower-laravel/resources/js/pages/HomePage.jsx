@@ -11,7 +11,6 @@ import {
   ArrowRight,
   CheckCircle2,
   Sparkles,
-  Star,
   ShoppingBag,
   Wrench,
   Zap,
@@ -57,10 +56,10 @@ const TXT = {
     ],
     journeyAll: 'Vous préférez tout équiper d’un coup ?',
     journeyAllCta: 'Voir les packs Appartement et Villa',
- journeyWcNote: 'Gagnez 3 L à chaque fois que vous tirez la chasse',
- journeyTap: 'Robinet',
+    journeyWcNote: 'Gagnez 3 L à chaque fois que vous tirez la chasse',
+    journeyTap: 'Robinet',
     journeyShower: 'Douche & Flexible',
-    
+
     trustWater: "Économie d'eau",
     trustGas: 'Économie gaz STEG',
     trustYears: '3 Ans',
@@ -73,6 +72,8 @@ const TXT = {
     ttc: 'TTC',
     giftMeter: 'Sac Débitmètre Offert',
     addToCart: (price) => `Ajouter au Panier (${price} DT)`,
+    
+deliveryNote: 'Livraison 8 DT · Paiement à la livraison',
     cardFooter: 'Paiement à la livraison • Satisfait ou remboursé 14 jours',
     clipBadge: 'Installation Rapide Sans Outils',
     clipTitle: 'Où installer les économiseurs dans votre logement ?',
@@ -144,11 +145,11 @@ const TXT = {
     heroText: 'الحل اللي يوفّر الماء، مصنوع من Delrin/Hostaform ومعتمد، ويظبط ضغط الماء في تونس. نفس الراحة متاع الماء، وتستهلك نص الماء ونص الغاز. يوصلك لدارك في 24 ساعة مع شهادة ضمان 3 سنين.',
     ctaOrder: 'اطلب باك إيكو',
     ctaSimulate: 'احسب قدّاش باش توفّر',
-    
+
     fromPrice: 'ابتداء من',
     heroChips: ['تركيب في دقيقتين بلا عدّة', 'الخلاص عند الاستلام', 'توصيل في 24-48 ساعة', 'راضي ولا نرجعولك فلوسك في 14 يوم'],
 
-     journeyBadge: 'خطوة بخطوة',
+    journeyBadge: 'خطوة بخطوة',
     journeyTitle: 'جهّز دارك على راحتك',
     journeyText: 'ابدا بباك، وكمّل كي تحب. كل منتوج يتسكّر بيدك في أقل من دقيقتين، بلا عدّة.',
     journeySteps: [
@@ -175,7 +176,7 @@ const TXT = {
     journeyAll: 'تحب تجهّز دارك كاملة مرة وحدة؟',
     journeyAllCta: 'شوف باكات الشقة والفيلا',
     journeyWcNote: 'تربح 3 لتر في كل مرة تسحب chasse التواليت',
-  journeyTap: 'روبيني',
+    journeyTap: 'روبيني',
     journeyShower: ' دوش & Flexible',
     trustWater: 'توفير في الماء',
     trustGas: 'توفير في غاز الستاغ',
@@ -189,6 +190,7 @@ const TXT = {
     ttc: ' شامل الأداءات (TTC).',
     giftMeter: 'كيس قياس تدفّق المياه مجانًا',
     addToCart: (price) => `زيد للسلة (${price} د.ت)`,
+deliveryNote: 'التوصيل 8 د.ت · الخلاص عند الاستلام',
     cardFooter: 'الخلاص عند الاستلام • راضي ولا نرجعولك فلوسك في 14 يوم',
     clipBadge: 'تركيب سريع بلا عدّة',
     clipTitle: 'وين تركّب الموفّرات في دارك؟',
@@ -256,42 +258,45 @@ const TXT = {
 };
 
 export const HomePage = ({ setCurrentTab }) => {
-    const { addToCart, language, setIsCartOpen } = useCart();
+  const { addToCart, language, setIsCartOpen } = useCart();
   const [openFaq, setOpenFaq] = useState(null);
   const t = TXT[language] || TXT.fr;
 
-  // Produits cochés « Afficher sur la page d'accueil » dans l'admin.
-  // La liste ci-dessous ne sert qu'en attendant la réponse du serveur.
-  const [featuredPacks, setFeaturedPacks] = useState(() => [
-    {
-      id: 'pack-appartement-4l',
-      name: 'Pack Appartement 4L',
-      price: 78.0,
-      oldPrice: 99.0,
-      image: '/products/pack_appartement_4l.webp',
-    },
-    {
-      id: 'pack-maison-4l',
-      name: 'Pack Maison / Villa 4L',
-      price: 129.0,
-      oldPrice: 159.0,
-      image: '/products/pack_maison_4l.webp',
-    }
-  ]);
+  // Tant que la réponse du serveur n'est pas arrivée, on n'affiche aucun prix
+  // (évite de montrer brièvement un prix par défaut différent de celui de la publicité).
+  const [loaded, setLoaded] = useState(false);
+  // true si la requête a échoué : on n'affiche alors aucun prix erroné.
+  const [apiFailed, setApiFailed] = useState(false);
 
-  // Cartes en haut à droite : les produits cochés « Produit vedette » dans l'admin (2 maximum).
+  // Produits cochés « Afficher sur la page d'accueil » dans l'admin.
+  const [featuredPacks, setFeaturedPacks] = useState([]);
+
+  // Cartes en haut : les produits cochés « Produit vedette » dans l'admin (2 maximum).
   const [heroes, setHeroes] = useState([]);
 
   useEffect(() => {
     fetch('/api/products')
-      .then((res) => (res.ok ? res.json() : null))
+      .then((res) => {
+        if (!res.ok) throw new Error('bad status');
+        return res.json();
+      })
       .then((list) => {
-        if (!Array.isArray(list)) return;
+        if (!Array.isArray(list)) throw new Error('bad payload');
         setFeaturedPacks(list.filter((p) => p.showOnHome));
         setHeroes(list.filter((p) => p.isHero).slice(0, 2));
       })
-      .catch(() => {});
+      .catch(() => setApiFailed(true))
+      .finally(() => setLoaded(true));
   }, []);
+
+  // Les prix ne sont montrés que si les données sont chargées avec succès.
+  const showPrices = loaded && !apiFailed;
+
+  // Ajoute au panier puis ouvre le panier, pour que le client voie toujours le résultat de son clic.
+  const addAndOpen = (item) => {
+    addToCart({ id: item.id, name: item.name, price: item.price, image: item.image });
+    setIsCartOpen(true);
+  };
 
   // Données d'une carte vedette : textes rédigés pour le Pack Appartement 4L, sinon ceux de la fiche produit.
   const buildHeroCard = (hero) => (hero && hero.id !== 'pack-appartement-4l'
@@ -320,12 +325,12 @@ export const HomePage = ({ setCurrentTab }) => {
           : null,
       });
 
-  // Aucun produit vedette coché : on garde la carte du Pack Appartement par défaut.
+  // Aucun produit vedette coché dans l'admin : on garde la carte du Pack Appartement par défaut.
   const heroCards = (heroes.length ? heroes : [null]).map(buildHeroCard);
   const twoHeroes = heroCards.length > 1;
 
-    const fromPrice = Math.min(...heroCards.map((c) => c.price));
-// Produit de départ : le moins cher des produits vedettes (le Pack de Base)
+  const fromPrice = Math.min(...heroCards.map((c) => c.price));
+  // Produit de départ : le moins cher des produits vedettes (le Pack de Base)
   const starter = heroCards.reduce((min, c) => (c.price < min.price ? c : min), heroCards[0]);
 
   // Une entrée par étape : image(s) et action du bouton
@@ -333,11 +338,15 @@ export const HomePage = ({ setCurrentTab }) => {
     {
       images: [{ src: starter.image }],
       onClick: () => {
-        addToCart({ id: starter.id, name: starter.name, price: starter.price, image: starter.image });
-        setIsCartOpen(true);
+        // Données pas encore là (ou erreur serveur) : on envoie vers la boutique plutôt que d'ajouter un mauvais produit.
+        if (!showPrices) {
+          setCurrentTab('shop');
+          return;
+        }
+        addAndOpen(starter);
       },
     },
-         {
+    {
       images: [
         { src: '/products/cartouche_hydro_verte_paire.jpg', caption: `${t.journeyTap} 4 L/min`, pos: '50% 44%' },
         { src: '/products/cartouche_hydro_verte.jpg', caption: `${t.journeyTap} 5 L/min`, pos: '50% 62%' },
@@ -351,139 +360,104 @@ export const HomePage = ({ setCurrentTab }) => {
       onClick: () => setCurrentTab('shop'),
     },
   ];
-const renderHeroCard = (heroCard) => (
-  <div
-    key={heroCard.id}
-    className="relative w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/90 overflow-hidden flex flex-col"
-  >
-    {heroCard.offer && (
-      <div className="absolute top-4 end-4 bg-energy-500 text-white text-xs font-black uppercase px-3 py-1.5 rounded-full shadow-xs">
-        {heroCard.offer}
-      </div>
-    )}
 
-    {/* En-tête : texte à gauche, logo "14 jours satisfait ou remboursé" à droite */}
-    <div className="flex items-start justify-between gap-4">
-      <div className="min-w-0">
-        <div className="text-xs font-bold text-brand-700 uppercase tracking-wider mb-2 pe-20 sm:pe-0">
-          {t.cardKicker}
+  const renderHeroCard = (heroCard, index = 0) => (
+    <div
+      key={heroCard.id}
+      className="relative w-full bg-white rounded-3xl p-6 sm:p-8 shadow-2xl border border-slate-200/90 overflow-hidden flex flex-col"
+    >
+      {heroCard.offer && (
+        <div className="absolute top-4 end-4 bg-energy-500 text-white text-xs font-black uppercase px-3 py-1.5 rounded-full shadow-xs">
+          {heroCard.offer}
         </div>
-        <h3 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif">
-          {heroCard.title}
-        </h3>
-        <p className="text-sm text-slate-600 mt-2 leading-relaxed line-clamp-3">
-          {heroCard.sub}
-        </p>
+      )}
+
+      {/* En-tête : texte à gauche, logo "14 jours satisfait ou remboursé" à droite */}
+      <div className="flex items-start justify-between gap-4">
+        <div className="min-w-0">
+          <div className="text-xs font-bold text-brand-700 uppercase tracking-wider mb-2 pe-20 sm:pe-0">
+            {t.cardKicker}
+          </div>
+          <h3 className="text-2xl sm:text-3xl font-black text-slate-900 font-serif">
+            {heroCard.title}
+          </h3>
+          <p className="text-sm text-slate-600 mt-2 leading-relaxed line-clamp-3">
+            {heroCard.sub}
+          </p>
+        </div>
+
+        <img
+          src="/garantie-14-jours.webp"
+          alt="Garantie satisfait ou remboursé 14 jours"
+          width="112"
+          height="106"
+          decoding="async"
+          className="w-20 sm:w-28 h-auto shrink-0 mt-7 drop-shadow-sm"
+        />
       </div>
 
-      <img
-        src="/garantie-14-jours.webp"
-        alt="Garantie satisfait ou remboursé 14 jours"
-        width="112"
-        height="106"
-        className="w-20 sm:w-28 h-auto shrink-0 mt-7 drop-shadow-sm"
-      />
-    </div>
+      <div className="my-6 p-2 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center">
+        <img
+          src={heroCard.image}
+          alt={heroCard.title}
+          loading={index === 0 ? 'eager' : 'lazy'}
+          decoding="async"
+          className="w-full h-80 sm:h-[28rem] object-contain drop-shadow-md hover:scale-[1.03] transition-transform"
+        />
+      </div>
 
-    <div className="my-6 p-2 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center">
-      <img
-        src={heroCard.image}
-        alt={heroCard.title}
-        className="w-full h-80 sm:h-[28rem] object-contain drop-shadow-md hover:scale-[1.03] transition-transform"
-      />
-    </div>
-
-    <div className="flex flex-wrap items-baseline justify-between gap-2 mb-4 mt-auto">
-      <div>
-        {heroCard.oldPrice > heroCard.price && (
-          <span className="text-sm text-slate-400 line-through me-2">
-            {heroCard.oldPrice.toFixed(3)} {t.cur}
+      <div className="flex flex-wrap items-baseline justify-between gap-2 mb-4 mt-auto">
+        <div>
+          {heroCard.oldPrice > heroCard.price && (
+            <span className="text-sm text-slate-400 line-through me-2">
+              {heroCard.oldPrice.toFixed(3)} {t.cur}
+            </span>
+          )}
+          <span className="text-4xl font-black text-brand-900 whitespace-nowrap">
+            {heroCard.price.toFixed(3)} {t.cur}
+          </span>
+          <span className="text-sm text-slate-500 ms-1">{t.ttc}</span>
+          <p className="text-xs font-semibold text-slate-600 mt-1">{t.deliveryNote}</p>
+        </div>
+        {heroCard.isPack && (
+          <span className="text-sm font-bold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-md">
+            {t.giftMeter}
           </span>
         )}
-        <span className="text-4xl font-black text-brand-900 whitespace-nowrap">
-          {heroCard.price.toFixed(3)} {t.cur}
-        </span>
-        <span className="text-sm text-slate-500 ms-1">{t.ttc}</span>
       </div>
-      {heroCard.isPack && (
-        <span className="text-sm font-bold text-blue-700 bg-blue-50 px-3 py-1.5 rounded-md">
-          {t.giftMeter}
-        </span>
-      )}
+
+      <button
+        onClick={() => addAndOpen(heroCard)}
+        className="w-full bg-brand-700 hover:bg-brand-800 text-white font-black py-4 px-4 text-base rounded-xl flex items-center justify-center gap-2 shadow-md shadow-brand-700/20 transition-all hover:scale-[1.02]"
+      >
+        <ShoppingBag className="w-5 h-5" />
+        <span>{t.addToCart(heroCard.price.toFixed(3))}</span>
+      </button>
+
+      <p className="text-center text-xs text-slate-600 mt-4 flex items-center justify-center gap-1.5">
+        <CheckCircle2 className="w-4 h-4 text-blue-600" />
+        {t.cardFooter}
+      </p>
     </div>
-
-    <button
-      onClick={() =>
-        addToCart({
-          id: heroCard.id,
-          name: heroCard.name,
-          price: heroCard.price,
-          image: heroCard.image,
-        })
-      }
-      className="w-full bg-brand-700 hover:bg-brand-800 text-white font-black py-4 px-4 text-base rounded-xl flex items-center justify-center gap-2 shadow-md shadow-brand-700/20 transition-all hover:scale-[1.02]"
-    >
-      <ShoppingBag className="w-5 h-5" />
-      <span>{t.addToCart(heroCard.price.toFixed(3))}</span>
-    </button>
-
-    <p className="text-center text-xs text-slate-600 mt-4 flex items-center justify-center gap-1.5">
-      <CheckCircle2 className="w-4 h-4 text-blue-600" />
-      {t.cardFooter}
-    </p>
-  </div>
-);
-
-
-  // Clip diagram zones (from Pascal's email RETOUCHES CLIP)
-  const clipZones = [
-    {
-    waterSaved: '+60%',
-    gasSaved: '+25%',
-    imgs: [
-      { src: '/products/cartouche_hydro_verte_paire.jpg', flow: '4 L/min' },
-      { src: '/products/cartouche_hydro_verte.jpg', flow: '5 L/min' },
-    ],
-  },
-  {
-    waterSaved: '+60%',
-    gasSaved: '+25%',
-    imgs: [
-      { src: '/products/cartouche_hydro_verte_paire.jpg', flow: '4 L/min' },
-      { src: '/products/cartouche_hydro_verte.jpg', flow: '5 L/min' }
-      
-    ],
-  },
-    {
-    waterSaved: '+60%',
-    gasSaved: '+25%',
-    imgs: [
-       {src: '/products/bague_mousseur_grille_bleue.jpg', flow: '5 L/min' },
-      { src: '/products/bague_mousseur_complet.jpg', flow: '7 L/min' },
-      
-    ],
-  },
-    { waterSaved: '-30%', gasSaved: null, img: '/products/ecosac_wc_3l.jpg' },
-  ].map((z, idx) => ({ ...z, ...t.clipZones[idx], gasSaved: z.gasSaved ?? t.gasNA }));
+  );
 
   return (
     <div className="space-y-16 sm:space-y-24">
-    <SEO
-  title={language === 'ar'
-    ? 'إيكوباور تونس | موفّرات الماء والطاقة'
-    : "EcoPower Tunisie | Dispositifs hydro-économes et économie d'eau"}
-  description={language === 'ar'
-    ? 'نقّص في فاتورة الصوناد والستاغ مع موفّرات الماء. توصيل لكامل تونس والخلاص عند الاستلام.'
-    : "Réduisez vos factures d'eau SONEDE et de gaz avec les dispositifs hydro-économes EcoPower. Packs particuliers et pros, livraison partout en Tunisie."}
-  path="/"
-/>
-
+      <SEO
+        title={language === 'ar'
+          ? 'إيكوباور تونس | موفّرات الماء والطاقة'
+          : "EcoPower Tunisie | Dispositifs hydro-économes et économie d'eau"}
+        description={language === 'ar'
+          ? 'نقّص في فاتورة الصوناد والستاغ مع موفّرات الماء. توصيل لكامل تونس والخلاص عند الاستلام.'
+          : "Réduisez vos factures d'eau SONEDE et de gaz avec les dispositifs hydro-économes EcoPower. Packs particuliers et pros, livraison partout en Tunisie."}
+        path="/"
+      />
 
       {/* 1. HERO SECTION */}
-  <section className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-brand-800 to-skywater-700 text-white pt-10 pb-28 sm:pt-16 sm:pb-36">
+      <section className="relative overflow-hidden bg-gradient-to-br from-brand-900 via-brand-800 to-skywater-700 text-white pt-10 pb-28 sm:pt-16 sm:pb-36">
 
-        {/* Décor : halos lumineux et gouttes qui flottent (purement décoratif) */}
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0">
+        {/* Décor : halos lumineux et gouttes qui flottent (purement décoratif, masqué sur mobile pour alléger) */}
+        <div aria-hidden="true" className="pointer-events-none absolute inset-0 hidden sm:block">
           <div className="absolute -top-24 -start-24 w-80 h-80 rounded-full bg-sky-400/20 blur-3xl" />
           <div className="absolute top-1/3 -end-24 w-96 h-96 rounded-full bg-blue-400/20 blur-3xl" />
           <Droplets className="float-slow absolute top-16 start-[8%] w-10 h-10 text-sky-300/40" />
@@ -496,7 +470,7 @@ const renderHeroCard = (heroCard) => (
           {/* Texte */}
           <div className="order-1 max-w-3xl mx-auto space-y-6 text-center">
 
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur border border-white/20 text-sky-100 text-xs font-bold tracking-wide">
+            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 sm:backdrop-blur border border-white/20 text-sky-100 text-xs font-bold tracking-wide">
               <Sparkles className="w-4 h-4 text-amber-300" />
               <span>{t.heroBadge}</span>
             </div>
@@ -512,12 +486,18 @@ const renderHeroCard = (heroCard) => (
               {t.heroText}
             </p>
 
-            {/* Pastille de prix */}
-            <div className="inline-flex items-baseline gap-2 bg-white text-brand-900 rounded-2xl px-5 py-2 shadow-lg">
-              <span className="text-xs font-bold text-slate-500">{t.fromPrice}</span>
-              <span className="text-3xl font-black" dir="ltr">{fromPrice.toFixed(3)}</span>
-              <span className="text-sm font-bold">{t.cur}</span>
-            </div>
+            {/* Pastille de prix : affichée seulement quand le vrai prix est connu */}
+            {loaded ? (
+              showPrices && (
+                <div className="inline-flex items-baseline gap-2 bg-white text-brand-900 rounded-2xl px-5 py-2 shadow-lg">
+                  <span className="text-xs font-bold text-slate-500">{t.fromPrice}</span>
+                  <span className="text-3xl font-black" dir="ltr">{fromPrice.toFixed(3)}</span>
+                  <span className="text-sm font-bold">{t.cur}</span>
+                </div>
+              )
+            ) : (
+              <div className="h-14 w-56 rounded-2xl bg-white/20 animate-pulse mx-auto" />
+            )}
 
             {/* CTAs */}
             <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-1">
@@ -531,7 +511,7 @@ const renderHeroCard = (heroCard) => (
 
               <button
                 onClick={() => setCurrentTab('calculator')}
-                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 backdrop-blur text-white border border-white/30 font-bold px-7 py-4 rounded-2xl text-base flex items-center justify-center gap-2 transition-all"
+                className="w-full sm:w-auto bg-white/10 hover:bg-white/20 sm:backdrop-blur text-white border border-white/30 font-bold px-7 py-4 rounded-2xl text-base flex items-center justify-center gap-2 transition-all"
               >
                 <span>{t.ctaSimulate}</span>
                 <ArrowRight className="w-4 h-4 rtl:rotate-180" />
@@ -566,16 +546,19 @@ const renderHeroCard = (heroCard) => (
 
           </div>
 
-          {/* Cartes vedettes (inchangées) */}
+          {/* Cartes vedettes : placeholder pendant le chargement, rien si le serveur a échoué */}
           <div className="order-2">
             <div
               className={
-                twoHeroes
+                twoHeroes && showPrices
                   ? 'grid grid-cols-1 md:grid-cols-2 gap-6 items-stretch'
                   : 'max-w-xl mx-auto'
               }
             >
-              {heroCards.map((heroCard) => renderHeroCard(heroCard))}
+              {!loaded && (
+                <div className="max-w-xl mx-auto h-[32rem] rounded-3xl bg-white/10 animate-pulse" />
+              )}
+              {showPrices && heroCards.map((heroCard, i) => renderHeroCard(heroCard, i))}
             </div>
           </div>
 
@@ -593,8 +576,8 @@ const renderHeroCard = (heroCard) => (
         </svg>
       </section>
 
-      {/* 2. SCHÉMA CLIP & ZONES D'INSTALLATION (Demandé par Pascal Fabre) */}
-    <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      {/* 2. PARCOURS ÉTAPE PAR ÉTAPE */}
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center max-w-3xl mx-auto mb-14">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-skywater-100 text-skywater-800 text-xs font-bold uppercase tracking-wider mb-3">
             <Zap className="w-4 h-4 text-skywater-600" />
@@ -637,51 +620,52 @@ const renderHeroCard = (heroCard) => (
                     </span>
                   )}
 
-                  {/* Images */}
-{/* Zone image : même hauteur sur les 3 cartes pour tout aligner */}
-<div className="h-72 sm:h-80 bg-slate-50 rounded-2xl border border-slate-100 p-3 overflow-hidden">
-  {meta.images.length > 2 ? (
-    /* Carte 2 : grille 2x2 qui remplit exactement la zone */
-    <div className="grid grid-cols-2 grid-rows-2 gap-3 h-full">
-      {meta.images.map((img) => (
-        <div key={img.src} className="flex flex-col min-h-0">
-          <div className="flex-1 min-h-0 overflow-hidden rounded-xl bg-white border border-slate-200">
-            <img
-              src={img.src}
-              alt={`${step.title} - ${img.caption}`}
-              loading="lazy"
-              className="w-full h-full object-cover scale-125"
-              style={{ objectPosition: img.pos, filter: 'brightness(1.1) contrast(1.05)' }}
-            />
-          </div>
-          <span className="mt-1.5 text-[11px] font-bold text-slate-700 text-center leading-tight">
-            {img.caption}
-          </span>
-        </div>
-      ))}
-    </div>
-  ) : (
-    /* Cartes 1 et 3 : une grande image centrée, légende dessous */
-    <div className="h-full flex flex-col items-center justify-center gap-2">
-      <img
-        src={meta.images[0].src}
-        alt={meta.images[0].caption ? `${step.title} - ${meta.images[0].caption}` : step.title}
-        loading="lazy"
-        className="flex-1 min-h-0 w-full object-contain rounded-xl"
-      />
-      {meta.images[0].caption && (
-        <span className="text-sm font-bold text-slate-700 text-center leading-snug">
-          {meta.images[0].caption}
-        </span>
-      )}
-    </div>
-  )}
-</div>
+                  {/* Zone image : même hauteur sur les 3 cartes pour tout aligner */}
+                  <div className="h-72 sm:h-80 bg-slate-50 rounded-2xl border border-slate-100 p-3 overflow-hidden">
+                    {meta.images.length > 2 ? (
+                      /* Carte 2 : grille 2x2 qui remplit exactement la zone */
+                      <div className="grid grid-cols-2 grid-rows-2 gap-3 h-full">
+                        {meta.images.map((img) => (
+                          <div key={img.src} className="flex flex-col min-h-0">
+                            <div className="flex-1 min-h-0 overflow-hidden rounded-xl bg-white border border-slate-200">
+                              <img
+                                src={img.src}
+                                alt={`${step.title} - ${img.caption}`}
+                                loading="lazy"
+                                decoding="async"
+                                className="w-full h-full object-cover scale-125"
+                                style={{ objectPosition: img.pos, filter: 'brightness(1.1) contrast(1.05)' }}
+                              />
+                            </div>
+                            <span className="mt-1.5 text-[11px] font-bold text-slate-700 text-center leading-tight">
+                              {img.caption}
+                            </span>
+                          </div>
+                        ))}
+                      </div>
+                    ) : (
+                      /* Cartes 1 et 3 : une grande image centrée, légende dessous */
+                      <div className="h-full flex flex-col items-center justify-center gap-2">
+                        <img
+                          src={meta.images[0].src}
+                          alt={meta.images[0].caption ? `${step.title} - ${meta.images[0].caption}` : step.title}
+                          loading="lazy"
+                          decoding="async"
+                          className="flex-1 min-h-0 w-full object-contain rounded-xl"
+                        />
+                        {meta.images[0].caption && (
+                          <span className="text-sm font-bold text-slate-700 text-center leading-snug">
+                            {meta.images[0].caption}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
 
-                 <h3 className="mt-5 text-xl font-extrabold text-slate-900 font-serif">{step.title}</h3>
-<p className="text-sm text-slate-600 leading-relaxed mt-2 min-h-[4.5rem]">{step.desc}</p>
+                  <h3 className="mt-5 text-xl font-extrabold text-slate-900 font-serif">{step.title}</h3>
+                  <p className="text-sm text-slate-600 leading-relaxed mt-2 min-h-[4.5rem]">{step.desc}</p>
 
-                  {first && (
+                  {first && showPrices && (
                     <div className="mt-3 flex items-baseline gap-2">
                       <span className="text-xs font-bold text-slate-500">{t.fromPrice}</span>
                       <span className="text-2xl font-black text-brand-900" dir="ltr">{starter.price.toFixed(3)}</span>
@@ -736,14 +720,14 @@ const renderHeroCard = (heroCard) => (
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <SavingsCalculator onSelectPack={(packId) => {
           if (packId === 'pack-appartement-4l') {
-            addToCart({
+            addAndOpen({
               id: 'pack-appartement-4l',
               name: 'Pack Appartement 4 Litres',
               price: 78.0,
               image: '/products/pack_appartement_4l.webp'
             });
           } else {
-            addToCart({
+            addAndOpen({
               id: 'pack-maison-4l',
               name: 'Pack Maison / Villa 4 Litres',
               price: 129.0,
@@ -783,64 +767,59 @@ const renderHeroCard = (heroCard) => (
               features: (pack.features || []).slice(0, 4),
             };
             return (
-            <div
-              key={pack.id}
-              className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-md hover:shadow-xl transition-all flex flex-col justify-between"
-            >
-              <div>
-                <div className="flex justify-between items-start mb-4">
-                  <span className="px-3 py-1 bg-brand-100 text-brand-800 text-xs font-bold rounded-full">
-                    {tp.badge}
-                  </span>
-                  <div className="flex items-center gap-1 text-amber-400">
-                    <Star className="w-4 h-4 fill-amber-400" />
-                    <span className="text-xs font-black text-slate-800" dir="ltr">4.9 / 5</span>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center mb-6">
-                  <div className="sm:col-span-5 h-44 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center p-3">
-                    <img
-                      src={pack.image}
-                      alt={tp.name}
-                      className="max-h-full max-w-full object-contain"
-                    />
-                  </div>
-                  <div className="sm:col-span-7">
-                    <h3 className="text-xl font-black text-slate-900 font-serif">{tp.name}</h3>
-                    <p className="text-xs text-slate-600 mt-1 leading-relaxed">{tp.desc}</p>
-                    <div className="mt-3">
-                      {pack.oldPrice ? (
-                        <span className="text-xs text-slate-400 line-through me-2">{pack.oldPrice.toFixed(3)} {t.cur}</span>
-                      ) : null}
-                      <span className="text-2xl font-black text-brand-800">{pack.price.toFixed(3)} {t.cur}</span>
-                    </div>
-                  </div>
-                </div>
-
-                <div className="space-y-2 mb-6 text-xs text-slate-700">
-                  {tp.features.map((feat, fidx) => (
-                    <div key={fidx} className="flex items-center gap-2">
-                      <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
-                      <span>{feat}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <button
-                onClick={() => addToCart({
-                  id: pack.id,
-                  name: pack.name,
-                  price: pack.price,
-                  image: pack.image
-                })}
-                className="w-full bg-gradient-to-r from-energy-500 to-energy-600 hover:from-energy-600 hover:to-energy-500 text-white font-black py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-md shadow-energy-500/25 transition-all hover:scale-[1.01]"
+              <div
+                key={pack.id}
+                className="bg-white rounded-3xl border border-slate-200/90 p-6 sm:p-8 shadow-md hover:shadow-xl transition-all flex flex-col justify-between"
               >
-                <ShoppingBag className="w-4 h-4" />
-                <span>{t.addToCart(pack.price.toFixed(3))}</span>
-              </button>
-            </div>
+                <div>
+                  <div className="flex justify-between items-start mb-4">
+                    <span className="px-3 py-1 bg-brand-100 text-brand-800 text-xs font-bold rounded-full">
+                      {tp.badge}
+                    </span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center mb-6">
+                    <div className="sm:col-span-5 h-44 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center p-3">
+                      <img
+                        src={pack.image}
+                        alt={tp.name}
+                        loading="lazy"
+                        decoding="async"
+                        className="max-h-full max-w-full object-contain"
+                      />
+                    </div>
+                    <div className="sm:col-span-7">
+                      <h3 className="text-xl font-black text-slate-900 font-serif">{tp.name}</h3>
+                      <p className="text-xs text-slate-600 mt-1 leading-relaxed">{tp.desc}</p>
+                      <div className="mt-3">
+                        {pack.oldPrice ? (
+                          <span className="text-xs text-slate-400 line-through me-2">{pack.oldPrice.toFixed(3)} {t.cur}</span>
+                        ) : null}
+                        <span className="text-2xl font-black text-brand-800">{pack.price.toFixed(3)} {t.cur}</span>
+
+                      </div>
+<p className="text-xs font-semibold text-slate-600 mt-1">{t.deliveryNote}</p>
+                    </div>
+                  </div>
+
+                  <div className="space-y-2 mb-6 text-xs text-slate-700">
+                    {tp.features.map((feat, fidx) => (
+                      <div key={fidx} className="flex items-center gap-2">
+                        <CheckCircle2 className="w-4 h-4 text-blue-600 shrink-0" />
+                        <span>{feat}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+
+                <button
+                  onClick={() => addAndOpen(pack)}
+                  className="w-full bg-gradient-to-r from-energy-500 to-energy-600 hover:from-energy-600 hover:to-energy-500 text-white font-black py-3.5 px-4 rounded-xl text-sm flex items-center justify-center gap-2 shadow-md shadow-energy-500/25 transition-all hover:scale-[1.01]"
+                >
+                  <ShoppingBag className="w-4 h-4" />
+                  <span>{t.addToCart(pack.price.toFixed(3))}</span>
+                </button>
+              </div>
             );
           })}
         </div>
@@ -892,7 +871,7 @@ const renderHeroCard = (heroCard) => (
       <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-10">
         <div className="bg-gradient-to-br from-brand-900 via-brand-800 to-skywater-700 text-white rounded-3xl p-8 sm:p-14 text-center relative overflow-hidden shadow-2xl">
           <div className="relative z-10 max-w-2xl mx-auto space-y-5">
-            <span className="px-3.5 py-1.5 rounded-full bg-white/10 backdrop-blur-md text-sky-300 text-xs font-bold uppercase tracking-wider border border-white/20">
+            <span className="px-3.5 py-1.5 rounded-full bg-white/10 sm:backdrop-blur-md text-sky-300 text-xs font-bold uppercase tracking-wider border border-white/20">
               {t.finalBadge}
             </span>
             <h2 className="text-3xl sm:text-5xl font-black font-serif tracking-tight text-white">
